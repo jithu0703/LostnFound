@@ -1,44 +1,20 @@
-import fs from 'fs';
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
-import path from 'path';
+import User from '../models/User.js';
 
-const dataPath = new URL('../data/users.json', import.meta.url);
-
-
-if (!fs.existsSync(dataPath)) {
-  fs.writeFileSync(dataPath, '[]', 'utf-8'); 
-}
-
-
-const readUsers = () => {
+export const getUsers = async (req, res) => {
   try {
-    const data = fs.readFileSync(dataPath, 'utf-8');
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
-};
-
-const saveUsers = (users) => {
-  fs.writeFileSync(dataPath, JSON.stringify(users, null, 2));
-};
-
-
-export const getUsers = (req, res) => {
-  try {
-    const users = readUsers();
+    const users = await User.find().select('-password');
     res.json(users);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Error reading users' });
   }
 };
 
-
-export const getUserById = (req, res) => {
+export const getUserById = async (req, res) => {
   try {
-    const users = readUsers();
-    const user = users.find(u => u.id == req.params.id);
+    const user = await User.findById(req.params.id).select('-password');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -46,17 +22,17 @@ export const getUserById = (req, res) => {
 
     res.json(user);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Error reading user' });
   }
 };
 
-
 export const addUser = async (req, res) => {
   try {
-    const { email, password, confirmPassword } = req.body;
+    const { name, email, password, confirmPassword, phone } = req.body;
 
     if (!email || !password || !confirmPassword) {
-      return res.status(400).json({ message: 'All fields are required' });
+      return res.status(400).json({ message: 'Email, password, and confirmPassword are required' });
     }
 
     if (!email.endsWith('@psgtech.ac.in')) {
@@ -67,23 +43,22 @@ export const addUser = async (req, res) => {
       return res.status(400).json({ message: 'Passwords do not match' });
     }
 
-    const users = readUsers();
+    const existingUser = await User.findOne({ email });
 
-    if (users.find(u => u.email === email)) {
+    if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
-
     
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = {
-      id: Date.now(),
+    const newUser = new User({
+      name,
       email,
-      password: hashedPassword
-    };
+      password: hashedPassword,
+      phone
+    });
 
-    users.push(newUser);
-    saveUsers(users);
+    await newUser.save();
 
     res.status(201).json({ message: 'Signup successful' });
 
@@ -93,7 +68,6 @@ export const addUser = async (req, res) => {
   }
 };
 
-
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -102,8 +76,7 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    const users = readUsers();
-    const user = users.find(u => u.email === email);
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -116,7 +89,7 @@ export const loginUser = async (req, res) => {
 
     // Generate token
     const token = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user._id, email: user.email },
       process.env.JWT_SECRET || 'SECRET_KEY',
       { expiresIn: '1h' }
     );
@@ -124,7 +97,7 @@ export const loginUser = async (req, res) => {
     res.status(200).json({
       message: 'Login successful',
       token,
-      user: { id: user.id, email: user.email }
+      user: { id: user._id, email: user.email, name: user.name, phone: user.phone }
     });
 
   } catch (error) {
@@ -133,20 +106,31 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export const deleteUser = (req, res) => {
+export const deleteUser = async (req, res) => {
   try {
-    const users = readUsers();
-    const updatedUsers = users.filter(u => u.id != req.params.id);
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
 
-    if (users.length === updatedUsers.length) {
+    if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    saveUsers(updatedUsers);
     res.json({ message: 'User deleted' });
 
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error deleting user' });
+  }
+};
+
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching user data' });
   }
 };
