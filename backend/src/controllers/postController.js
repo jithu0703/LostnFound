@@ -2,11 +2,22 @@ import Post from '../models/Post.js';
 
 export const createPost = async (req, res) => {
   try {
-    const { type, itemName, description, imageUrl, location, date } = req.body;
+    const { type, itemName, description, date } = req.body;
+
+    let parsedLocation = undefined;
+    if (req.body.location) {
+      try {
+        parsedLocation = JSON.parse(req.body.location);
+      } catch (e) {
+        parsedLocation = { block: req.body.location, floor: "", room: "" };
+      }
+    }
 
     if (!type || !itemName || !description || !date) {
       return res.status(400).json({ message: 'Type, itemName, description, and date are required' });
     }
+
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : req.body.imageUrl;
 
     const newPost = new Post({
       userId: req.user._id,
@@ -14,7 +25,7 @@ export const createPost = async (req, res) => {
       itemName,
       description,
       imageUrl,
-      location,
+      location: parsedLocation,
       date
     });
 
