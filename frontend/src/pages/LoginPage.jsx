@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
@@ -8,7 +8,6 @@ export default function LoginPage() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
 
-  // Load session
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
@@ -16,12 +15,10 @@ export default function LoginPage() {
     }
   }, []);
 
-  // Email validation
   const isValidEmail = (email) => {
     return email.endsWith("@psgtech.ac.in");
   };
 
-  // SIGNUP
   const handleSignup = () => {
     setError("");
 
@@ -33,7 +30,7 @@ export default function LoginPage() {
 
     const existingUser = users.find((u) => u.email === email);
     if (existingUser) {
-      return setError("User already exists. Please login.");
+      return setError("User already exists");
     }
 
     const newUser = { name, email, password };
@@ -45,12 +42,11 @@ export default function LoginPage() {
     setIsSignup(false);
   };
 
-  // LOGIN
   const handleLogin = () => {
     setError("");
 
     if (!isValidEmail(email)) {
-      return setError("Only for Psg tech students allowed");
+      return setError("Only PSG Tech students allowed");
     }
 
     const users = JSON.parse(localStorage.getItem("users")) || [];
@@ -67,20 +63,24 @@ export default function LoginPage() {
     setUser(foundUser);
   };
 
-  // LOGOUT
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
     setUser(null);
   };
 
-  // Logged in view
   if (user) {
     return (
-      <div style={styles.container}>
-        <div style={styles.card}>
-          <h2>Welcome, {user.name}</h2>
-          <p>Lost & Found Portal</p>
-          <button onClick={handleLogout} style={styles.button}>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 to-indigo-100">
+        <div className="bg-white p-8 rounded-2xl shadow-xl text-center w-80">
+          <h2 className="text-xl font-bold mb-2">
+            Welcome, {user.name}
+          </h2>
+          <p className="text-gray-600 mb-4">Lost & Found Portal</p>
+
+          <button
+            onClick={handleLogout}
+            className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition"
+          >
             Logout
           </button>
         </div>
@@ -88,51 +88,57 @@ export default function LoginPage() {
     );
   }
 
-  // Form UI
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h2 style={{ marginBottom: "20px" }}>
-          {isSignup ? "Signup" : "Login"} - College Lost & Found
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 to-indigo-100">
+      <div className="bg-white p-8 rounded-2xl shadow-xl w-80">
+        <h2 className="text-2xl font-bold text-center mb-2">
+          {isSignup ? "Signup" : "Login"}
         </h2>
+        <p className="text-center text-gray-500 mb-4">
+          College Lost & Found
+        </p>
 
         {isSignup && (
           <input
             type="text"
             placeholder="Full Name"
+            className="w-full p-2 mb-3 border rounded-lg focus:ring-2 focus:ring-purple-400"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            style={styles.input}
           />
         )}
 
         <input
           type="email"
           placeholder="Email (@psgtech.ac.in)"
+          className="w-full p-2 mb-3 border rounded-lg focus:ring-2 focus:ring-purple-400"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
         />
 
         <input
           type="password"
           placeholder="Password"
+          className="w-full p-2 mb-3 border rounded-lg focus:ring-2 focus:ring-purple-400"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
         />
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm text-center mb-2">
+            {error}
+          </p>
+        )}
 
         <button
           onClick={isSignup ? handleSignup : handleLogin}
-          style={styles.button}
+          className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition"
         >
           {isSignup ? "Sign Up" : "Login"}
         </button>
 
         <p
-          style={{ marginTop: "10px", cursor: "pointer", color: "#2563eb" }}
+          className="text-center text-sm text-purple-600 mt-3 cursor-pointer hover:underline"
           onClick={() => {
             setIsSignup(!isSignup);
             setError("");
@@ -146,61 +152,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-// Styles
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100vh",
-    width: "100%",
-    background: "linear-gradient(135deg, #e0e7ff, #f3f4f6)",
-  },
-
-  card: {
-    background: "#ffffff",
-    padding: "35px",
-    borderRadius: "16px",
-    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-    width: "340px",
-    textAlign: "center",
-    transition: "0.3s",
-  },
-
-  title: {
-    marginBottom: "20px",
-    fontWeight: "600",
-    color: "#1f2937",
-  },
-
-  input: {
-    width: "100%",
-    padding: "12px",
-    marginBottom: "12px",
-    border: "1px solid #d1d5db",
-    borderRadius: "8px",
-    outline: "none",
-    fontSize: "14px",
-  },
-
-  button: {
-    width: "100%",
-    padding: "12px",
-    background: "linear-gradient(135deg, #2563eb, #1e40af)",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "600",
-    fontSize: "15px",
-    transition: "0.3s",
-  },
-
-  toggleText: {
-    marginTop: "12px",
-    color: "#2563eb",
-    cursor: "pointer",
-    fontSize: "14px",
-  }
-};
