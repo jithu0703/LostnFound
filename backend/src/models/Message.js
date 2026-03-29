@@ -3,18 +3,27 @@ import mongoose from "mongoose";
 const messageSchema = new mongoose.Schema({
   senderId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
+    ref: "User",
+    required: true
   },
   receiverId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
+    ref: "User",
+    required: true
   },
-  itemId: {
+  postId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Item"
+    ref: "Post",
+    required: true
   },
-  messageText: String,
-  date: Date
-});
+  messageText: {
+    type: String,
+    required: true
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  }
+}, { timestamps: true });
 
 export default mongoose.model("Message", messageSchema);
