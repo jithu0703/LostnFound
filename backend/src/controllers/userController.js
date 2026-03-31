@@ -31,16 +31,14 @@ export const addUser = async (req, res) => {
   try {
     const { name, email, password, confirmPassword, phone } = req.body;
 
-    if (!email || !password || !confirmPassword) {
-      return res.status(400).json({ message: 'Email, password, and confirmPassword are required' });
+    // Ignore confirmPassword (frontend handles it)
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
     }
 
     if (!email.endsWith('@psgtech.ac.in')) {
       return res.status(400).json({ message: 'Use college email only' });
-    }
-
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: 'Passwords do not match' });
     }
 
     const existingUser = await User.findOne({ email });
@@ -48,7 +46,7 @@ export const addUser = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
-    
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
