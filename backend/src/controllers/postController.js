@@ -40,7 +40,24 @@ export const createPost = async (req, res) => {
 
 export const getPosts = async (req, res) => {
   try {
-    const posts = await Post.find().populate('userId', 'name email phone');
+    const { search, type } = req.query;
+
+    let filter = {};
+
+    // Filter by type (lost / found)
+    if (type) {
+      filter.type = type;
+    }
+
+    // Search by itemName (case-insensitive)
+    if (search) {
+      filter.itemName = { $regex: search, $options: "i" };
+    }
+
+    const posts = await Post.find(filter)
+      .populate('userId', 'name email phone')
+      .sort({ createdAt: -1 }); // latest first
+
     res.json(posts);
   } catch (error) {
     console.error(error);
