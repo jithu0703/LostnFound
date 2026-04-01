@@ -180,7 +180,7 @@ export default function LandingPage() {
         />
 
       {/* Hero Section */}
-      <section className="hero-section relative min-h-screen w-full flex overflow-hidden bg-lost-bg">
+      <section className={`hero-section relative min-h-screen w-full flex bg-lost-bg ${heroMode === 'split' ? 'overflow-hidden' : 'overflow-visible'}`}>
         
         {/* Left: Lost World */}
         <div className={`hero-half min-h-full flex flex-col justify-center relative z-10 transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden whitespace-nowrap ${heroMode === 'lost' ? 'w-full' : heroMode === 'found' ? 'w-0 opacity-0' : 'w-1/2'}`}>
@@ -211,9 +211,11 @@ export default function LandingPage() {
           </div>
 
           {/* New Elements (Form) */}
-          <div className={`w-[100vw] min-h-screen flex items-start justify-center whitespace-normal pt-32 pb-12 transition-all duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] absolute top-0 left-0 ${heroMode === 'lost' ? 'opacity-100 translate-x-0 pointer-events-auto delay-300 z-20' : 'opacity-0 translate-x-32 pointer-events-none -z-10'}`}>
+          {heroMode === 'lost' && (
+            <div className="w-full flex items-start justify-center whitespace-normal pt-32 pb-16 animate-fade-in-right z-20">
               <ReportLostForm onCancel={() => setHeroMode('split')} />
-          </div>
+            </div>
+          )}
 
         </div>
 
@@ -239,9 +241,11 @@ export default function LandingPage() {
           </div>
 
           {/* New Elements (Form) */}
-          <div className={`w-[100vw] min-h-screen flex items-start justify-center whitespace-normal pt-32 pb-12 transition-all duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] absolute top-0 right-0 ${heroMode === 'found' ? 'opacity-100 translate-x-0 pointer-events-auto delay-300 z-20' : 'opacity-0 -translate-x-32 pointer-events-none -z-10'}`}>
+          {heroMode === 'found' && (
+            <div className="w-full flex items-start justify-center whitespace-normal pt-32 pb-16 animate-fade-in-left z-20">
               <PostFoundForm onCancel={() => setHeroMode('split')} />
-          </div>
+            </div>
+          )}
         </div>
 
         {/* The Seam / Rift */}

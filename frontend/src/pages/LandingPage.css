@@ -134,3 +134,19 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+/* Directional fade-in for sliding door forms */
+@keyframes fadeInFromRight {
+  0% { opacity: 0; transform: translateX(60px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInFromLeft {
+  0% { opacity: 0; transform: translateX(-60px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+.animate-fade-in-right {
+  animation: fadeInFromRight 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both;
+}
+.animate-fade-in-left {
+  animation: fadeInFromLeft 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both;
+}
