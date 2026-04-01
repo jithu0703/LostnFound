@@ -23,6 +23,7 @@ export default function LandingPage() {
 
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
+    localStorage.removeItem("token");
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -41,13 +42,6 @@ export default function LandingPage() {
       if (cursorDotRef.current && cursorSpotRef.current) {
         cursorDotRef.current.style.transform = `translate3d(${clientX}px, ${clientY}px, 0)`;
         cursorSpotRef.current.style.transform = `translate3d(${clientX - 160}px, ${clientY - 160}px, 0)`;
-        
-        // Spotlight behavior based on side
-        if (isRightSide) {
-          cursorSpotRef.current.style.opacity = '1';
-        } else {
-          cursorSpotRef.current.style.opacity = '0.05';
-        }
       }
     };
 
@@ -186,14 +180,19 @@ export default function LandingPage() {
           <div className="floating-item item-1">🔑</div>
           <div className="floating-item item-2">💳</div>
           <div className="floating-item item-3">🎒</div>
+          <div className="floating-item item-4">👓</div>
+          <div className="floating-item item-5">📱</div>
+          <div className="floating-item item-6">⌚</div>
+          <div className="floating-item item-7">🎧</div>
+          <div className="floating-item item-8">🌂</div>
           <div className="fog-wisp"></div>
 
-          <div className="scroll-reveal slide-up">
+          <div className="scroll-reveal slide-up text-right">
             <p className="font-syne font-bold text-lost-accent uppercase tracking-[0.2em] text-sm mb-4">Lost Something?</p>
             <h1 className="font-syne font-extrabold text-lost-text text-5xl lg:text-7xl leading-tight tracking-tight mb-8">
               Something slipped<br />into the dark
             </h1>
-            <p className="font-crimson italic text-lost-muted text-xl lg:text-2xl max-w-md mb-10 leading-relaxed">
+            <p className="font-crimson italic text-lost-muted text-xl lg:text-2xl max-w-md mb-10 leading-relaxed text-right">
               When the shadows deepen and what was yours goes astray, let our network locate the trace.
             </p>
             <button onClick={() => requireAuth(() => console.log('Report Lost Clicked'))} className="ghost-btn inline-block border-2 border-lost-accent text-lost-accent font-syne font-bold py-4 px-10 rounded-full transition-all hover:bg-lost-accent hover:text-white uppercase tracking-wider text-sm cursor-none">
@@ -257,28 +256,28 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Step 1 */}
             <div className="step-card group relative bg-lost-mid p-10 rounded-2xl border border-white/5 overflow-hidden transition-all hover:border-lost-accent/50 scroll-reveal slide-up">
-              <div className="absolute -top-8 -right-4 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-lost-accent/10 transition-colors">1</div>
+              <div className="absolute -top-8 -right-0 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-lost-accent/10 transition-colors">1</div>
               <h3 className="font-syne font-bold text-2xl text-lost-text mb-4 relative z-10">Report Lost</h3>
               <p className="font-crimson text-lost-muted text-lg relative z-10">Describe what slipped away. Upload photos, drop a pin, let the search begin.</p>
             </div>
             
             {/* Step 2 */}
             <div className="step-card group relative bg-lost-mid p-10 rounded-2xl border border-white/5 overflow-hidden transition-all hover:border-found-gold/50 scroll-reveal slide-up delay-100">
-              <div className="absolute -top-8 -right-4 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-found-gold/10 transition-colors">2</div>
+              <div className="absolute -top-8 -right-0 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-found-gold/10 transition-colors">2</div>
               <h3 className="font-syne font-bold text-2xl text-[var(--c-found-candle)] mb-4 relative z-10">Post Found</h3>
               <p className="font-crimson text-lost-muted text-lg relative z-10">Secure the item. Our AI will automatically generate clear tags and descriptions.</p>
             </div>
             
             {/* Step 3 */}
-            <div className="step-card group relative bg-lost-mid p-10 rounded-2xl border border-white/5 overflow-hidden transition-all hover:border-lost-accent/50 scroll-reveal slide-up">
-              <div className="absolute -top-8 -right-4 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-lost-accent/10 transition-colors">3</div>
+            <div className="step-card group relative bg-lost-mid p-10 rounded-2xl border border-white/5 overflow-hidden transition-all hover:border-found-gold/50 scroll-reveal slide-up">
+              <div className="absolute -top-8 -right-0 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-lost-accent/10 transition-colors">3</div>
               <h3 className="font-syne font-bold text-2xl text-lost-text mb-4 relative z-10">AI Matches</h3>
               <p className="font-crimson text-lost-muted text-lg relative z-10">The system algorithmically aligns the dark with the light, finding the 94% match instantaneously.</p>
             </div>
             
             {/* Step 4 */}
-            <div className="step-card group relative bg-lost-mid p-10 rounded-2xl border border-white/5 overflow-hidden transition-all hover:border-found-gold/50 scroll-reveal slide-up delay-100">
-              <div className="absolute -top-8 -right-4 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-found-gold/10 transition-colors">4</div>
+            <div className="step-card group relative bg-lost-mid p-10 rounded-2xl border border-white/5 overflow-hidden transition-all hover:border-lost-accent/50 scroll-reveal slide-up delay-100">
+              <div className="absolute -top-8 -right-0 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-found-gold/10 transition-colors">4</div>
               <h3 className="font-syne font-bold text-2xl text-[var(--c-found-candle)] mb-4 relative z-10">Reunite</h3>
               <p className="font-crimson text-lost-muted text-lg relative z-10">Connect via encrypted direct messaging. Hand over the item. The cycle completes.</p>
             </div>

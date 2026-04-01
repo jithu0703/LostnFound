@@ -1,54 +1,64 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 export default function LoginModal({ onClose, onLoginSuccess }) {
   const [isSignup, setIsSignup] = useState(false);
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const isValidEmail = (email) => email.endsWith("@psgtech.ac.in");
 
-  const handleSignup = () => {
+  const API_URL = "http://localhost:5000/api/auth";
+
+  const handleSignup = async () => {
     setError("");
 
+    if (!name.trim() || name.length < 3) {
+      return setError("Name must be at least 3 characters.");
+    }
+    if (!/^\d{10}$/.test(phone)) {
+      return setError("Please enter a valid 10-digit phone number.");
+    }
     if (!isValidEmail(email)) {
-      return setError("Only @psgtech.ac.in emails allowed");
+      return setError("Only @psgtech.ac.in emails allowed.");
+    }
+    if (!password || password.length < 6) {
+      return setError("Password must be at least 6 characters.");
     }
 
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-
-    const existingUser = users.find((u) => u.email === email);
-    if (existingUser) {
-      return setError("User already exists. Please login.");
+    try {
+      await axios.post(`${API_URL}/signup`, { name, email, password, phone });
+      setError("Signup successful! Please login.");
+      setIsSignup(false);
+    } catch (err) {
+      setError(err.response?.data?.message || "Error during signup");
     }
-
-    const newUser = { name, email, password };
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-
-    setError("Signup successful! Please login.");
-    setIsSignup(false);
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setError("");
 
     if (!isValidEmail(email)) {
-      return setError("Only @psgtech.ac.in emails allowed");
+      return setError("Only @psgtech.ac.in emails allowed.");
+    }
+    if (!password) {
+      return setError("Please enter your password.");
     }
 
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const foundUser = users.find(
-      (u) => u.email === email && u.password === password
-    );
+    try {
+      const response = await axios.post(`${API_URL}/login`, { email, password });
+      const { token, user } = response.data;
 
-    if (!foundUser) {
-      return setError("Invalid credentials");
+      localStorage.setItem("token", token);
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      
+      if (onLoginSuccess) onLoginSuccess(user);
+    } catch (err) {
+      setError(err.response?.data?.message || "Error during login");
     }
-
-    localStorage.setItem("currentUser", JSON.stringify(foundUser));
-    if (onLoginSuccess) onLoginSuccess(foundUser);
   };
 
   return (
@@ -72,13 +82,22 @@ export default function LoginModal({ onClose, onLoginSuccess }) {
         </h2>
 
         {isSignup && (
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full bg-lost-mid border border-white/5 text-white p-3 mb-3 rounded-lg outline-none focus:border-found-gold/50 transition-colors font-sans"
-          />
+          <>
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full bg-lost-mid border border-white/5 text-white p-3 mb-3 rounded-lg outline-none focus:border-found-gold/50 transition-colors font-sans"
+            />
+            <input
+              type="tel"
+              placeholder="Phone Number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full bg-lost-mid border border-white/5 text-white p-3 mb-3 rounded-lg outline-none focus:border-found-gold/50 transition-colors font-sans"
+            />
+          </>
         )}
 
         <input
@@ -97,7 +116,11 @@ export default function LoginModal({ onClose, onLoginSuccess }) {
           className="w-full bg-lost-mid border border-white/5 text-white p-3 mb-4 rounded-lg outline-none focus:border-found-gold/50 transition-colors font-sans"
         />
 
-        {error && <p className="text-red-400 font-syne text-sm mb-4">{error}</p>}
+        {error && (
+          <div className="bg-red-950/40 border border-red-500/30 text-red-300 font-syne font-bold text-sm py-2 px-3 rounded-md mb-4 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
+            {error}
+          </div>
+        )}
 
         <button
           onClick={isSignup ? handleSignup : handleLogin}
@@ -107,7 +130,7 @@ export default function LoginModal({ onClose, onLoginSuccess }) {
         </button>
 
         <p
-          className="mt-6 text-lost-muted font-sans text-sm cursor-pointer hover:text-white transition-colors"
+          className="mt-6 text-white font-sans font-semibold tracking-wide text-sm cursor-pointer hover:text-found-candle transition-colors underline underline-offset-4 opacity-90 hover:opacity-100"
           onClick={() => {
             setIsSignup(!isSignup);
             setError("");

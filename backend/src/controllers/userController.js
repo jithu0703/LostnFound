@@ -29,7 +29,7 @@ export const getUserById = async (req, res) => {
 
 export const addUser = async (req, res) => {
   try {
-    const { name, email, password, confirmPassword, phone } = req.body;
+    const { name, email, password, phone } = req.body;
 
     // Ignore confirmPassword (frontend handles it)
 
