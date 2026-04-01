@@ -1,0 +1,117 @@
+.landing-wrapper {
+  --c-lost-bg: #080610;
+  --c-lost-mid: #100e1a;
+  --c-lost-text: #b0a4cc;
+  --c-lost-muted: #6e6388;
+  --c-lost-accent: #7c5cbf;
+  --c-found-bg: #fdf6e8;
+  --c-found-text: #1e160a;
+  --c-found-ink: #7a6448;
+  --c-found-gold: #c8933a;
+  --c-found-bright: #e0aa55;
+  --c-found-candle: #f0c070;
+  --c-found-ember: #d4773a;
+}
+
+/* Global cursor overrider for landing */
+.landing-wrapper * {
+  cursor: none !important;
+}
+
+/* Custom Cursor Dot */
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  box-shadow: 0 0 10px var(--c-found-candle);
+  /* The explicit transform is set via JS ref */
+}
+
+/* Custom Cursor Spotlight */
+.cursor-spotlight {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  transition: opacity 0.5s ease;
+  mix-blend-mode: screen;
+  /* The explicit transform is set via JS ref */
+}
+
+/* Background Animations */
+.floating-item {
+  position: absolute;
+  font-size: 2.5rem;
+  opacity: 0.05;
+  filter: grayscale(100%);
+  animation: driftUp 22s infinite linear;
+  z-index: 0;
+  user-select: none;
+}
+
+.item-1 { bottom: -10%; left: 20%; animation-delay: 0s; }
+.item-2 { bottom: -10%; left: 55%; animation-delay: -7s; font-size: 3rem; }
+.item-3 { bottom: -10%; left: 80%; animation-delay: -14s; }
+
+@keyframes driftUp {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.15; }
+  80% { opacity: 0.15; }
+  100% { transform: translateY(-110vh) rotate(180deg); opacity: 0; }
+}
+
+.fog-wisp {
+  position: absolute;
+  top: 10%;
+  left: -20%;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(circle, rgba(124, 92, 191, 0.07) 0%, transparent 60%);
+  border-radius: 50%;
+  animation: fogDrift 35s infinite alternate ease-in-out;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes fogDrift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30%, 10%) scale(1.3); }
+}
+
+/* Intersection Observer Classes */
+.scroll-reveal {
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slide-up {
+  transform: translateY(40px);
+}
+
+.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.delay-100 { transition-delay: 150ms; }
+.delay-200 { transition-delay: 300ms; }
+
+/* Sub-components */
+.floating-badge {
+  animation: badgeFloat 3.5s infinite ease-in-out alternate;
+}
+
+@keyframes badgeFloat {
+  0% { transform: translateY(0px) rotate(-8deg); }
+  100% { transform: translateY(-12px) rotate(-8deg); }
+}
