@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import LoginModal from '../components/LoginModal';
+import ReportLostForm from '../components/ReportLostForm';
+import PostFoundForm from '../components/PostFoundForm';
 import './LandingPage.css';
 
 export default function LandingPage() {
@@ -12,6 +14,7 @@ export default function LandingPage() {
   const [showLogin, setShowLogin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const [heroMode, setHeroMode] = useState('split');
 
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
@@ -150,12 +153,17 @@ export default function LandingPage() {
       { threshold: 0.1 }
     );
 
-    document.querySelectorAll('.scroll-reveal').forEach((el) => {
-      observer.observe(el);
-    });
+    const timeoutId = setTimeout(() => {
+      document.querySelectorAll('.scroll-reveal').forEach((el) => {
+        observer.observe(el);
+      });
+    }, 50);
 
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      clearTimeout(timeoutId);
+      observer.disconnect();
+    };
+  }, [heroMode]);
 
   return (
     <div className="landing-wrapper relative min-h-screen bg-lost-bg">
@@ -172,10 +180,10 @@ export default function LandingPage() {
         />
 
       {/* Hero Section */}
-      <section className="hero-section relative h-screen w-full flex overflow-hidden bg-lost-bg">
+      <section className="hero-section relative min-h-screen w-full flex overflow-hidden bg-lost-bg">
         
         {/* Left: Lost World */}
-        <div className="hero-half w-1/2 h-full flex flex-col justify-center px-16 relative z-10 2xl:px-32">
+        <div className={`hero-half min-h-full flex flex-col justify-center relative z-10 transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden whitespace-nowrap ${heroMode === 'lost' ? 'w-full' : heroMode === 'found' ? 'w-0 opacity-0' : 'w-1/2'}`}>
           {/* Drifting background items */}
           <div className="floating-item item-1">🔑</div>
           <div className="floating-item item-2">💳</div>
@@ -185,43 +193,59 @@ export default function LandingPage() {
           <div className="floating-item item-6">⌚</div>
           <div className="floating-item item-7">🎧</div>
           <div className="floating-item item-8">🌂</div>
-          <div className="fog-wisp"></div>
-
-          <div className="scroll-reveal slide-up text-right">
-            <p className="font-syne font-bold text-lost-accent uppercase tracking-[0.2em] text-sm mb-4">Lost Something?</p>
-            <h1 className="font-syne font-extrabold text-lost-text text-5xl lg:text-7xl leading-tight tracking-tight mb-8">
-              Something slipped<br />into the dark
-            </h1>
-            <p className="font-crimson italic text-lost-muted text-xl lg:text-2xl max-w-md mb-10 leading-relaxed text-right">
-              When the shadows deepen and what was yours goes astray, let our network locate the trace.
-            </p>
-            <button onClick={() => requireAuth(() => console.log('Report Lost Clicked'))} className="ghost-btn inline-block border-2 border-lost-accent text-lost-accent font-syne font-bold py-4 px-10 rounded-full transition-all hover:bg-lost-accent hover:text-white uppercase tracking-wider text-sm cursor-none">
-              Report Lost Item
-            </button>
+          
+          {/* Old Elements (Intro Text) */}
+          <div className={`w-[50vw] h-full flex flex-col justify-center px-8 sm:px-16 2xl:px-32 transition-all duration-[800ms] ease-in-out absolute top-0 right-0 ${heroMode === 'split' ? 'opacity-100 translate-x-0 pointer-events-auto delay-500' : 'opacity-0 -translate-x-16 pointer-events-none'}`}>
+            <div className="text-right whitespace-normal max-w-xl self-end">
+              <p className="font-syne font-bold text-lost-accent uppercase tracking-[0.2em] text-sm mb-4">Lost Something?</p>
+              <h1 className="font-syne font-extrabold text-lost-text text-5xl lg:text-7xl leading-tight tracking-tight mb-8">
+                Something slipped<br />into the dark
+              </h1>
+              <p className="font-crimson italic text-lost-muted text-xl lg:text-2xl max-w-md mb-10 border-r-2 border-lost-accent pr-6 py-2 leading-relaxed text-right ms-auto ">
+                When the shadows deepen and what was yours goes astray, let our network locate the trace.
+              </p>
+              <button onClick={() => requireAuth(() => setHeroMode('lost'))} className="ghost-btn inline-block border-2 border-lost-accent text-lost-accent font-syne font-bold py-4 px-10 rounded-full transition-all hover:bg-lost-accent hover:text-white uppercase tracking-wider text-sm cursor-none">
+                Report Lost Item
+              </button>
+            </div>
           </div>
+
+          {/* New Elements (Form) */}
+          <div className={`w-[100vw] min-h-screen flex items-start justify-center whitespace-normal pt-32 pb-12 transition-all duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] absolute top-0 left-0 ${heroMode === 'lost' ? 'opacity-100 translate-x-0 pointer-events-auto delay-300 z-20' : 'opacity-0 translate-x-32 pointer-events-none -z-10'}`}>
+              <ReportLostForm onCancel={() => setHeroMode('split')} />
+          </div>
+
         </div>
 
         {/* Right: Found World */}
-        <div className="hero-half w-1/2 h-full bg-found-bg flex flex-col justify-center px-16 relative z-10 border-l border-found-gold/10 2xl:px-32 overflow-hidden">
+        <div className={`hero-half min-h-full bg-found-bg flex flex-col justify-center relative z-10 border-found-gold/10 overflow-hidden whitespace-nowrap transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] ${heroMode === 'found' ? 'w-full' : heroMode === 'lost' ? 'w-0 opacity-0 border-l-0' : 'w-1/2 border-l'}`}>
           {/* Amber wash from the seam */}
-          <div className="absolute inset-y-0 left-0 w-64 bg-gradient-to-r from-found-ember/20 to-transparent pointer-events-none"></div>
+          <div className={`absolute inset-y-0 left-0 w-64 bg-gradient-to-r from-found-ember/20 to-transparent pointer-events-none transition-opacity duration-1000 ${heroMode === 'split' ? 'opacity-100' : 'opacity-0'}`}></div>
           
-          <div className="scroll-reveal slide-up delay-100">
-            <p className="font-syne font-bold text-found-ink uppercase tracking-[0.2em] text-sm mb-4">Found Something?</p>
-            <h1 className="font-syne font-extrabold text-found-text text-5xl lg:text-7xl leading-tight tracking-tight mb-8">
-              Carry the light<br />someone needs
-            </h1>
-            <p className="font-crimson italic text-found-ink text-xl lg:text-2xl max-w-md mb-10 border-l-2 border-found-gold pl-6 py-2 leading-relaxed">
-              A spark of kindness returning what was lost. "Carry the light" and guide it back home.
-            </p>
-            <button onClick={() => requireAuth(() => console.log('Post Found Clicked'))} className="solid-gold-btn inline-block bg-found-gold text-white shadow-[0_4px_14px_rgba(200,147,58,0.4)] font-syne font-bold py-4 px-10 rounded-full transition-all hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(200,147,58,0.6)] uppercase tracking-wider text-sm cursor-none">
-              Post Found Item
-            </button>
+          {/* Old Elements (Intro Text) */}
+          <div className={`w-[50vw] h-full flex flex-col justify-center px-8 sm:px-16 2xl:px-32 transition-all duration-[800ms] ease-in-out absolute top-0 left-0 ${heroMode === 'split' ? 'opacity-100 translate-x-0 pointer-events-auto delay-500' : 'opacity-0 translate-x-16 pointer-events-none'}`}>
+            <div className="whitespace-normal max-w-xl self-start">
+              <p className="font-syne font-bold text-found-ink uppercase tracking-[0.2em] text-sm mb-4">Found Something?</p>
+              <h1 className="font-syne font-extrabold text-found-text text-5xl lg:text-7xl leading-tight tracking-tight mb-8">
+                Carry the light<br />someone needs
+              </h1>
+              <p className="font-crimson italic text-found-ink text-xl lg:text-2xl max-w-md mb-10 border-l-2 border-found-gold pl-6 py-2 leading-relaxed">
+                A spark of kindness returning what was lost. "Carry the light" and guide it back home.
+              </p>
+              <button onClick={() => requireAuth(() => setHeroMode('found'))} className="solid-gold-btn inline-block bg-found-gold text-white shadow-[0_4px_14px_rgba(200,147,58,0.4)] font-syne font-bold py-4 px-10 rounded-full transition-all hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(200,147,58,0.6)] uppercase tracking-wider text-sm cursor-none">
+                Post Found Item
+              </button>
+            </div>
+          </div>
+
+          {/* New Elements (Form) */}
+          <div className={`w-[100vw] min-h-screen flex items-start justify-center whitespace-normal pt-32 pb-12 transition-all duration-[1000ms] ease-[cubic-bezier(0.25,1,0.5,1)] absolute top-0 right-0 ${heroMode === 'found' ? 'opacity-100 translate-x-0 pointer-events-auto delay-300 z-20' : 'opacity-0 -translate-x-32 pointer-events-none -z-10'}`}>
+              <PostFoundForm onCancel={() => setHeroMode('split')} />
           </div>
         </div>
 
         {/* The Seam / Rift */}
-        <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-64 z-20 pointer-events-none flex justify-center mix-blend-screen">
+        <div className={`absolute inset-y-0 left-1/2 -translate-x-1/2 w-64 z-20 pointer-events-none flex justify-center mix-blend-screen transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] ${heroMode === 'lost' ? 'left-full translate-x-1/2 opacity-0' : heroMode === 'found' ? 'left-0 -translate-x-[150%] opacity-0' : 'left-1/2 -translate-x-1/2 opacity-100'}`}>
           <canvas ref={canvasRef} className="h-full w-full"></canvas>
         </div>
       </section>
