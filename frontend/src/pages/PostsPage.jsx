@@ -39,6 +39,10 @@ export default function PostsPage() {
     window.location.href = "/";
   };
 
+  const [filter, setFilter] = useState('all');
+
+  const filteredPosts = posts.filter(p => filter === 'all' || p.type === filter);
+
   return (
     <div className="landing-wrapper min-h-screen bg-lost-bg text-white">
       <ShadowCursor />
@@ -51,56 +55,124 @@ export default function PostsPage() {
 
       <div className="pt-32 pb-20 px-8">
         <div className="max-w-6xl mx-auto">
-          <h1 className="font-syne font-extrabold text-5xl text-white mb-12 tracking-tight">
-            The <span className="text-found-gold">Great Inventory</span>
-          </h1>
+          
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-16">
+            <div>
+              <h1 className="font-syne font-extrabold text-5xl text-white mb-4 tracking-tight">
+                The <span className="text-found-gold">Great Inventory</span>
+              </h1>
+              <p className="font-crimson italic text-lost-muted text-xl max-w-md">
+                Every object tells a story of being missing, or the hope of being found.
+              </p>
+            </div>
+
+            {/* Filter Toggle */}
+            <div className="flex bg-lost-mid/80 p-1 rounded-full border border-white/5 backdrop-blur-md self-center md:self-auto">
+              {['all', 'lost', 'found'].map((t) => (
+                <button 
+                  key={t}
+                  onClick={() => setFilter(t)}
+                  className={`px-8 py-2 rounded-full font-syne font-bold text-xs uppercase tracking-widest transition-all cursor-none ${filter === t ? 'bg-found-gold text-white shadow-lg' : 'text-lost-muted hover:text-white'}`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
 
           {loading ? (
-            <div className="text-center py-20">
+            <div className="text-center py-32">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-found-gold"></div>
-              <p className="mt-4 font-crimson italic text-lost-muted">Sifting through the void...</p>
+              <p className="mt-4 font-crimson italic text-lost-muted text-lg">Sifting through the void...</p>
             </div>
-          ) : posts.length === 0 ? (
-            <div className="text-center py-20 bg-lost-mid/30 rounded-3xl border border-white/5">
-              <p className="font-crimson italic text-xl text-lost-muted">The ledger is currently empty. Balance has been restored.</p>
+          ) : filteredPosts.length === 0 ? (
+            <div className="text-center py-32 bg-lost-mid/30 rounded-3xl border border-white/5 backdrop-blur-sm">
+              <p className="font-crimson italic text-2xl text-lost-muted">
+                {filter === 'all' ? "The ledger is currently empty. Balance has been restored." : `No ${filter} items have been recorded in this sector yet.`}
+              </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {posts.map((post) => (
-                <div key={post._id} className={`group relative bg-lost-mid/50 rounded-2xl border border-white/5 overflow-hidden transition-all hover:scale-[1.02] hover:border-${post.type === 'lost' ? 'lost-accent' : 'found-gold'}/50 shadow-2xl`}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {filteredPosts.map((post) => (
+                <div 
+                  key={post._id} 
+                  className={`group relative rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-2 shadow-2xl ${
+                    post.type === 'lost' 
+                      ? 'bg-lost-mid/60 border border-lost-accent/20 hover:border-lost-accent/60' 
+                      : 'bg-found-bg border border-found-gold/20 hover:border-found-gold/60'
+                  }`}
+                >
                   {/* Image Container */}
-                  <div className="aspect-video w-full overflow-hidden bg-black/20 flex items-center justify-center relative">
+                  <div className="aspect-[4/3] w-full overflow-hidden bg-black/40 flex items-center justify-center relative">
                     {post.imageUrl ? (
-                      <img src={`http://localhost:5000${post.imageUrl}`} alt={post.itemName} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <img 
+                        src={`http://localhost:5000${post.imageUrl}`} 
+                        alt={post.itemName} 
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
+                      />
                     ) : (
-                      <span className="text-6xl opacity-20">{post.type === 'lost' ? '🔍' : '✨'}</span>
+                      <div className="flex flex-col items-center opacity-20 group-hover:opacity-40 transition-opacity">
+                        <span className="text-7xl mb-2">{post.type === 'lost' ? '🔍' : '✨'}</span>
+                        <span className="font-syne font-bold text-xs uppercase tracking-tighter">Image Vanished</span>
+                      </div>
                     )}
-                    <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-[10px] font-syne font-bold uppercase tracking-widest ${post.type === 'lost' ? 'bg-lost-accent text-white' : 'bg-found-gold text-white'}`}>
+                    
+                    {/* Badge */}
+                    <div className={`absolute top-5 left-5 px-4 py-1.5 rounded-full text-[10px] font-syne font-bold uppercase tracking-widest shadow-xl ${
+                      post.type === 'lost' ? 'bg-lost-accent text-white' : 'bg-found-gold text-white'
+                    }`}>
                       {post.type}
+                    </div>
+
+                    {/* Date Overlay */}
+                    <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-black/60 to-transparent flex items-end p-5">
+                       <div className="flex items-center gap-2 text-[10px] font-syne text-white uppercase tracking-widest font-bold">
+                        <span className="opacity-70">📅</span>
+                        <span>{new Date(post.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}</span>
+                      </div>
                     </div>
                   </div>
 
                   {/* Content */}
-                  <div className="p-6">
-                    <h3 className="font-syne font-bold text-xl text-white mb-2">{post.itemName}</h3>
-                    <p className="font-crimson text-lost-muted text-sm line-clamp-2 mb-4 leading-relaxed">
-                      {post.description}
+                  <div className="p-8">
+                    <h3 className={`font-syne font-extrabold text-2xl mb-3 tracking-tight ${
+                      post.type === 'lost' ? 'text-white' : 'text-found-text'
+                    }`}>{post.itemName}</h3>
+                    
+                    <p className={`font-crimson text-lg line-clamp-3 mb-6 leading-relaxed italic ${
+                      post.type === 'lost' ? 'text-lost-muted' : 'text-found-ink'
+                    }`}>
+                      "{post.description}"
                     </p>
                     
-                    <div className="flex flex-col gap-2 border-t border-white/5 pt-4">
-                      <div className="flex items-center gap-2 text-xs font-syne text-lost-muted uppercase tracking-wider">
-                        <span className="opacity-50">📍</span>
-                        <span>{post.location?.block} Block, Floor {post.location?.floor}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-xs font-syne text-lost-muted uppercase tracking-wider">
-                        <span className="opacity-50">📅</span>
-                        <span>{new Date(post.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    <div className={`flex flex-col gap-3 pt-6 border-t ${
+                      post.type === 'lost' ? 'border-white/5' : 'border-black/5'
+                    }`}>
+                      <div className={`flex items-center gap-3 text-xs font-syne uppercase tracking-wider font-bold ${
+                        post.type === 'lost' ? 'text-lost-accent' : 'text-found-gold'
+                      }`}>
+                        <span className="text-base">📍</span>
+                        <span>{post.location?.block} Block • Floor {post.location?.floor} • {post.location?.room || "General Area"}</span>
                       </div>
                     </div>
 
-                    <div className="mt-6 flex justify-between items-center">
-                       <p className="text-[10px] font-syne text-lost-muted/50 uppercase tracking-widest">Post by {post.userId?.name}</p>
-                       <button className="text-[10px] font-syne font-bold text-found-gold uppercase tracking-widest hover:text-white transition-colors cursor-pointer">View Details →</button>
+                    <div className="mt-8 flex justify-between items-center">
+                       <div className="flex items-center gap-2">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-syne font-bold text-[10px] ${
+                            post.type === 'lost' ? 'bg-lost-accent/20 text-lost-accent' : 'bg-found-gold/20 text-found-gold'
+                          }`}>
+                            {post.userId?.name?.charAt(0).toUpperCase()}
+                          </div>
+                          <p className={`text-[10px] font-syne uppercase tracking-widest font-bold ${
+                            post.type === 'lost' ? 'text-lost-muted' : 'text-found-ink/60'
+                          }`}>{post.userId?.name}</p>
+                       </div>
+                       
+                       <button className={`text-[10px] font-syne font-extrabold uppercase tracking-[0.2em] transition-all hover:translate-x-1 cursor-none ${
+                        post.type === 'lost' ? 'text-lost-accent hover:text-white' : 'text-found-gold hover:text-found-ember'
+                       }`}>
+                         Trace Details →
+                       </button>
                     </div>
                   </div>
                 </div>

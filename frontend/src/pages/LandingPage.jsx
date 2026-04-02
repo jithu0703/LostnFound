@@ -163,7 +163,7 @@ export default function LandingPage() {
         />
 
       {/* Hero Section */}
-      <section className={`hero-section relative min-h-screen w-full flex flex-col md:flex-row bg-lost-bg ${heroMode === 'split' ? 'overflow-hidden' : 'overflow-visible'}`}>
+      <section className="hero-section relative min-h-screen w-full flex flex-col md:flex-row bg-lost-bg overflow-hidden">
         
         {/* Left / Top: Lost World */}
         <div className={`hero-half flex flex-col justify-center relative z-10 transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden whitespace-nowrap ${heroMode === 'lost' ? 'w-full min-h-screen' : heroMode === 'found' ? 'md:w-0 w-full h-0 md:h-auto min-h-0 opacity-0' : 'w-full md:w-1/2 min-h-[50vh] md:min-h-full'}`}>

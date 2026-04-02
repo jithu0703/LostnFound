@@ -1,4 +1,5 @@
 .landing-wrapper {
+  overflow-x: hidden;
   --c-lost-bg: #080610;
   --c-lost-mid: #100e1a;
   --c-lost-text: #b0a4cc;
