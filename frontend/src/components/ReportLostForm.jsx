@@ -1,17 +1,58 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function ReportLostForm({ onCancel }) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     itemName: '',
     image: null,
     description: '',
     location: { block: '', floor: '', room: '' },
+    date: new Date().toISOString().split('T')[0],
   });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting Lost Item:", formData);
-    // TODO: wire up to backend postRoutes mapping
+    setError("");
+
+    if (!formData.date) {
+      return setError("Please select the date the item was lost.");
+    }
+    
+    if (new Date(formData.date) > new Date()) {
+      return setError("The date cannot be in the future.");
+    }
+
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const data = new FormData();
+      data.append('type', 'lost');
+      data.append('itemName', formData.itemName);
+      data.append('description', formData.description);
+      data.append('date', formData.date);
+      data.append('location', JSON.stringify(formData.location));
+      if (formData.image) {
+        data.append('image', formData.image);
+      }
+
+      await axios.post('http://localhost:5000/api/posts', data, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      navigate('/posts');
+    } catch (err) {
+      setError(err.response?.data?.message || "Error reporting lost item. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -70,6 +111,26 @@ export default function ReportLostForm({ onCancel }) {
           />
         </div>
 
+        {/* Date Field */}
+        <div>
+          <label className="block font-syne text-lost-muted text-sm uppercase tracking-widest mb-2 border-l-2 border-lost-accent pl-3">Date Lost</label>
+          <input 
+            type="date" 
+            required
+            max={new Date().toISOString().split('T')[0]}
+            value={formData.date}
+            onChange={(e) => setFormData({...formData, date: e.target.value})}
+            className="w-full bg-lost-mid/50 border border-white/10 text-white p-4 rounded-lg outline-none focus:border-lost-accent transition-colors font-sans appearance-none"
+          />
+        </div>
+
+        {/* Error Message Display */}
+        {error && (
+          <div className="bg-red-950/40 border border-red-500/30 text-red-300 font-syne font-bold text-sm py-2 px-3 rounded-md mb-4 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
+            {error}
+          </div>
+        )}
+
         {/* Location Dropdowns */}
         <div>
           <label className="block font-syne text-lost-muted text-sm uppercase tracking-widest mb-2 border-l-2 border-lost-accent pl-3">Location Last Seen</label>
@@ -101,8 +162,8 @@ export default function ReportLostForm({ onCancel }) {
         </div>
 
         {/* Submit */}
-        <button type="submit" className="w-full py-5 mt-6 bg-lost-accent text-white font-syne font-bold rounded-lg shadow-[0_4px_14px_rgba(124,92,191,0.4)] hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(124,92,191,0.6)] transition-all uppercase tracking-[0.2em] cursor-none">
-          Search the Void
+        <button type="submit" disabled={loading} className="w-full py-5 mt-6 bg-lost-accent text-white font-syne font-bold rounded-lg shadow-[0_4px_14px_rgba(124,92,191,0.4)] hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(124,92,191,0.6)] transition-all uppercase tracking-[0.2em] cursor-none disabled:opacity-50 disabled:cursor-wait">
+          {loading ? "Searching..." : "Search the Void"}
         </button>
 
       </form>

@@ -4,12 +4,11 @@ import Navbar from '../components/Navbar';
 import LoginModal from '../components/LoginModal';
 import ReportLostForm from '../components/ReportLostForm';
 import PostFoundForm from '../components/PostFoundForm';
+import ShadowCursor from '../components/ShadowCursor';
 import './LandingPage.css';
 
 export default function LandingPage() {
   const canvasRef = useRef(null);
-  const cursorDotRef = useRef(null);
-  const cursorSpotRef = useRef(null);
 
   const [showLogin, setShowLogin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -36,21 +35,7 @@ export default function LandingPage() {
     action();
   };
 
-  // Spotlight Cursor Logic
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      const { clientX, clientY } = e;
-      const isRightSide = clientX > window.innerWidth / 2;
-      
-      if (cursorDotRef.current && cursorSpotRef.current) {
-        cursorDotRef.current.style.transform = `translate3d(${clientX}px, ${clientY}px, 0)`;
-        cursorSpotRef.current.style.transform = `translate3d(${clientX - 160}px, ${clientY - 160}px, 0)`;
-      }
-    };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   // Canvas Rift Logic
   useEffect(() => {
@@ -166,10 +151,8 @@ export default function LandingPage() {
   }, [heroMode]);
 
   return (
-    <div className="landing-wrapper relative min-h-screen bg-lost-bg">
-      {/* Custom Cursor — hidden on touch devices */}
-      <div ref={cursorSpotRef} className="cursor-spotlight bg-[radial-gradient(circle,rgba(240,192,112,0.15)_0%,transparent_70%)] hidden md:block"></div>
-      <div ref={cursorDotRef} className="cursor-dot bg-found-candle hidden md:block"></div>
+    <div className="landing-wrapper relative min-h-screen bg-lost-bg text-white">
+      <ShadowCursor />
 
       <div className={`transition-all duration-700 ease-in-out ${showLogin ? 'blur-sm brightness-75 pointer-events-none select-none' : ''}`}>
         <Navbar 
@@ -193,7 +176,7 @@ export default function LandingPage() {
           <div className="floating-item item-6">⌚</div>
           <div className="floating-item item-7">🎧</div>
           <div className="floating-item item-8">🌂</div>
-          <div className="floating-item item-8">📖</div>
+          <div className="floating-item item-9">📖</div>
           
           {/* Old Elements (Intro Text) */}
           <div className={`w-full md:w-[50vw] h-full flex flex-col justify-center px-6 sm:px-12 md:px-16 2xl:px-32 transition-all duration-[800ms] ease-in-out absolute top-0 right-0 ${heroMode === 'split' ? 'opacity-100 translate-x-0 pointer-events-auto delay-500' : 'opacity-0 -translate-x-16 pointer-events-none'}`}>
