@@ -12,6 +12,8 @@
   --c-found-bright: #e0aa55;
   --c-found-candle: #f0c070;
   --c-found-ember: #d4773a;
+  width: 100%;
+  padding: 0%;
 }
 
 /* Global cursor overrider for landing - desktop only */

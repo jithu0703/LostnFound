@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import LoginModal from '../components/LoginModal';
 import ReportLostForm from '../components/ReportLostForm';
@@ -9,6 +9,8 @@ import './LandingPage.css';
 
 export default function LandingPage() {
   const canvasRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [showLogin, setShowLogin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -22,6 +24,15 @@ export default function LandingPage() {
       setIsAuthenticated(true);
     }
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('login') === 'true' && !isAuthenticated) {
+      setShowLogin(true);
+      // Clean up the URL to prevent re-triggering
+      navigate('/', { replace: true });
+    }
+  }, [location, isAuthenticated, navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
@@ -151,7 +162,7 @@ export default function LandingPage() {
   }, [heroMode]);
 
   return (
-    <div className="landing-wrapper relative min-h-screen bg-lost-bg text-white">
+    <div className="landing-wrapper relative min-h-screen bg-lost-bg text-white w-full">
       <ShadowCursor />
 
       <div className={`transition-all duration-700 ease-in-out ${showLogin ? 'blur-sm brightness-75 pointer-events-none select-none' : ''}`}>
@@ -354,11 +365,8 @@ export default function LandingPage() {
               back home.
             </h2>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <button onClick={() => requireAuth(() => console.log('Browse global'))} className="bg-white text-black font-syne font-bold py-4 px-10 rounded-full transition-all hover:bg-gray-200 uppercase tracking-wider text-sm shadow-xl cursor-none">
+              <button onClick={() => navigate('/posts')} className="bg-white text-black font-syne font-bold py-4 px-10 rounded-full transition-all hover:bg-gray-200 uppercase tracking-wider text-sm shadow-xl cursor-none">
                 Browse Global Listings
-              </button>
-              <button onClick={() => requireAuth(() => console.log('Login portal'))} className="border-2 border-white text-white font-syne font-bold py-4 px-10 rounded-full transition-all hover:bg-white/10 uppercase tracking-wider text-sm cursor-none">
-                Login via Portal
               </button>
             </div>
           </div>
@@ -386,7 +394,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#040308] border-t border-white/5 py-12 px-8 text-center scroll-reveal slide-up">
+      <footer className="bg-[#040308] border-t border-white/5 py-12 px-8 text-center scroll-reveal ">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="font-syne font-extrabold text-2xl text-white tracking-widest">
             LOST<span className="text-found-gold">N</span>FOUND

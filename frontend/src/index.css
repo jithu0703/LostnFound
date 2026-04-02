@@ -4,13 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Removed the hardcoded colors to avoid conflicts, tailwind handles them now */
-}
+/* :root {
+  /* Removed the hardcoded colors to avoid conflicts, tailwind handles them now *
+} */
+
+/* * { outline: 2px solid red; } */
 
 body {
   margin: 0;
   padding: 0;
+  width: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
