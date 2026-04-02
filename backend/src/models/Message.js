@@ -6,24 +6,29 @@ const messageSchema = new mongoose.Schema({
     ref: "User",
     required: true
   },
+
   receiverId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true
   },
+
   postId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Post",
     required: true
   },
+
   messageText: {
     type: String,
-    required: true
+    required: true   // ✅ constraint
   },
+
   date: {
     type: Date,
-    default: Date.now
+    default: Date.now   // ✅ constraint
   }
+
 }, { timestamps: true });
 
 export default mongoose.model("Message", messageSchema);
