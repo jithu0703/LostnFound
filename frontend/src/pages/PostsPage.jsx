@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Navbar from '../components/Navbar';
 import ShadowCursor from '../components/ShadowCursor';
 import './LandingPage.css'; // Reuse common styles
+import api from "../utils/api";
 
 export default function PostsPage() {
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ export default function PostsPage() {
       if (filter !== 'all') params.append('type', filter);
       if (debouncedSearch) params.append('search', debouncedSearch);
 
-      const response = await axios.get(`http://localhost:5000/api/posts?${params.toString()}`);
+      const response = await api.get(`/posts?${params.toString()}`);
       setPosts(response.data);
     } catch (error) {
       console.error("Error fetching posts:", error);

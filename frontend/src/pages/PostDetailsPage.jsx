@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import Navbar from '../components/Navbar';
 import ShadowCursor from '../components/ShadowCursor';
 import './LandingPage.css';
@@ -24,11 +24,11 @@ export default function PostDetailsPage() {
 
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/posts/${id}`);
+        const response = await api.get(`/posts/${id}`);
         setPost(response.data);
       } catch (err) {
-        console.error("Error fetching post:", err);
-        setError(err.response?.data?.message || "Trace lost in the void. Post not found.");
+        console.error("Error fetching post details:", err);
+        setError("Item has vanished or been moved.");
       } finally {
         setLoading(false);
       }
@@ -50,13 +50,10 @@ export default function PostDetailsPage() {
     
     setIsDeleting(true);
     try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/posts/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/posts/${id}`);
       navigate('/posts');
     } catch (err) {
-      alert(err.response?.data?.message || "Error resolving trace.");
+      alert("Only the reporter can mark this as resolved.");
       setIsDeleting(false);
     }
   };
@@ -188,7 +185,7 @@ export default function PostDetailsPage() {
                   </button>
                 ) : (
                   <Link 
-                    to="/messages"
+                    to={`/messages?post=${post._id}&to=${post.userId?._id}`}
                     className={`px-10 py-5 rounded-xl font-syne font-bold uppercase tracking-[0.2em] text-xs transition-all hover:-translate-y-1 flex items-center gap-3 ${
                       post.type === 'lost' 
                         ? 'bg-lost-accent text-white hover:shadow-[0_8px_20px_rgba(124,92,191,0.5)]' 

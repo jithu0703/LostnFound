@@ -1,11 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import api from '../utils/api';
 
 export default function Navbar({ onLoginClick, isAuthenticated, user, onLogout }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setUnreadCount(0);
+      return;
+    }
+
+    const fetchUnreadCount = async () => {
+      try {
+        const res = await api.get("/messages/unreadCount");
+        setUnreadCount(res.data.count);
+      } catch (err) {
+        console.error("Error fetching unread count", err);
+      }
+    };
+
+    fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 10000); // Poll every 10s
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -20,7 +42,12 @@ export default function Navbar({ onLoginClick, isAuthenticated, user, onLogout }
         <div className="hidden md:flex gap-8 w-1/3 justify-start font-syne text-[10px] font-bold tracking-[0.2em] uppercase items-center">
           <Link to="/" className={`transition-colors cursor-none ${location.pathname === '/' ? 'text-found-gold' : 'text-white/60 hover:text-white'}`}>Home</Link>
           <Link to="/posts" className={`transition-colors cursor-none ${location.pathname === '/posts' ? 'text-found-gold' : 'text-white/60 hover:text-white'}`}>Posts</Link>
-          <Link to="/messages" className={`transition-colors cursor-none ${location.pathname === '/messages' ? 'text-found-gold' : 'text-white/60 hover:text-white'}`}>Messages</Link>
+          <Link to="/messages" className={`transition-colors cursor-none relative ${location.pathname === '/messages' ? 'text-found-gold' : 'text-white/60 hover:text-white'}`}>
+            Messages
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-2.5 w-2 h-2 bg-red-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse"></span>
+            )}
+          </Link>
         </div>
 
         {/* Center Logo */}

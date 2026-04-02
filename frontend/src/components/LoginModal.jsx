@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../utils/api";
 
 export default function LoginModal({ onClose, onLoginSuccess }) {
   const [isSignup, setIsSignup] = useState(false);
@@ -7,11 +7,10 @@ export default function LoginModal({ onClose, onLoginSuccess }) {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
 
   const isValidEmail = (email) => email.endsWith("@psgtech.ac.in");
-
-  const API_URL = "http://localhost:5000/api/auth";
 
   const handleSignup = async () => {
     setError("");
@@ -30,9 +29,13 @@ export default function LoginModal({ onClose, onLoginSuccess }) {
     }
 
     try {
-      await axios.post(`${API_URL}/signup`, { name, email, password, phone });
-      setError("Signup successful! Please login.");
-      setIsSignup(false);
+      const response = await api.post("/auth/signup", { name, email, password, phone, rememberMe });
+      const { token, user } = response.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      
+      if (onLoginSuccess) onLoginSuccess(user);
     } catch (err) {
       setError(err.response?.data?.message || "Error during signup");
     }
@@ -49,7 +52,7 @@ export default function LoginModal({ onClose, onLoginSuccess }) {
     }
 
     try {
-      const response = await axios.post(`${API_URL}/login`, { email, password });
+      const response = await api.post("/auth/login", { email, password, rememberMe });
       const { token, user } = response.data;
 
       localStorage.setItem("token", token);
@@ -113,8 +116,21 @@ export default function LoginModal({ onClose, onLoginSuccess }) {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full bg-lost-mid border border-white/5 text-white p-3 mb-4 rounded-lg outline-none focus:border-found-gold/50 transition-colors font-sans"
+          className="w-full bg-lost-mid border border-white/5 text-white p-3 mb-2 rounded-lg outline-none focus:border-found-gold/50 transition-colors font-sans"
         />
+
+        <div className="flex items-center gap-2 mb-6 px-1">
+          <input
+            type="checkbox"
+            id="rememberMe"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+            className="w-4 h-4 rounded border-white/10 bg-lost-mid text-found-gold focus:ring-found-gold/30 accent-found-gold cursor-pointer"
+          />
+          <label htmlFor="rememberMe" className="text-xs font-syne font-bold text-lost-muted uppercase tracking-widest cursor-pointer select-none">
+            Keep me logged in
+          </label>
+        </div>
 
         {error && (
           <div className="bg-red-950/40 border border-red-500/30 text-red-300 font-syne font-bold text-sm py-2 px-3 rounded-md mb-4 shadow-[0_0_10px_rgba(239,68,68,0.2)]">

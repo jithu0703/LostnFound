@@ -156,3 +156,60 @@
 .animate-fade-in-left {
   animation: fadeInFromLeft 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both;
 }
+
+/* Messaging System Styles */
+.message-bubble {
+  max-width: 80%;
+  padding: 1rem 1.5rem;
+  border-radius: 1.5rem;
+  position: relative;
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  transition: all 0.3s ease;
+}
+
+.message-sent {
+  background: var(--c-found-gold);
+  color: white;
+  border-bottom-right-radius: 0.2rem;
+  align-self: flex-end;
+  box-shadow: 0 4px 15px rgba(200, 147, 58, 0.3);
+}
+
+.message-received {
+  background: var(--c-lost-mid);
+  color: var(--c-lost-text);
+  border: 1px border white/5;
+  border-bottom-left-radius: 0.2rem;
+  align-self: flex-start;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.chat-input-container {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.conversation-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.conversation-card.active {
+  background: rgba(200, 147, 58, 0.1);
+  border-left: 4px solid var(--c-found-gold);
+}
+
+.conversation-card:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.unread-indicator {
+  width: 8px;
+  height: 8px;
+  background: #f87171;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(248, 113, 113, 0.8);
+}

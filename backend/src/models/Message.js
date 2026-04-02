@@ -23,6 +23,11 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: true   // ✅ constraint
   },
+
+  isRead: {
+    type: Boolean,
+    default: false
+  },
 }, { timestamps: true });
 
 export default mongoose.model("Message", messageSchema);

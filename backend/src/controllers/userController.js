@@ -29,7 +29,7 @@ export const getUserById = async (req, res) => {
 
 export const addUser = async (req, res) => {
   try {
-    const { name, email, password, phone } = req.body;
+    const { name, email, password, phone, rememberMe } = req.body;
 
     // Ignore confirmPassword (frontend handles it)
 
@@ -58,7 +58,19 @@ export const addUser = async (req, res) => {
 
     await newUser.save();
 
-    res.status(201).json({ message: 'Signup successful' });
+    // Generate token for automatic login after signup
+    const expiresIn = rememberMe ? '30d' : '1h';
+    const token = jwt.sign(
+      { id: newUser._id, email: newUser.email },
+      process.env.JWT_SECRET || 'SECRET_KEY',
+      { expiresIn }
+    );
+
+    res.status(201).json({ 
+      message: 'Signup successful',
+      token,
+      user: { id: newUser._id, email: newUser.email, name: newUser.name, phone: newUser.phone }
+    });
 
   } catch (error) {
     console.error(error);
@@ -68,7 +80,7 @@ export const addUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
@@ -86,10 +98,11 @@ export const loginUser = async (req, res) => {
     }
 
     // Generate token
+    const expiresIn = rememberMe ? '30d' : '1h';
     const token = jwt.sign(
       { id: user._id, email: user.email },
       process.env.JWT_SECRET || 'SECRET_KEY',
-      { expiresIn: '1h' }
+      { expiresIn }
     );
 
     res.status(200).json({
