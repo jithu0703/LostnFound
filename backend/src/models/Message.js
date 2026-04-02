@@ -23,12 +23,6 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: true   // ✅ constraint
   },
-
-  date: {
-    type: Date,
-    default: Date.now   // ✅ constraint
-  }
-
 }, { timestamps: true });
 
 export default mongoose.model("Message", messageSchema);
