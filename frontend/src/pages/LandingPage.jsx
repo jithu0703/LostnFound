@@ -167,9 +167,9 @@ export default function LandingPage() {
 
   return (
     <div className="landing-wrapper relative min-h-screen bg-lost-bg">
-      {/* Custom Cursor */}
-      <div ref={cursorSpotRef} className="cursor-spotlight bg-[radial-gradient(circle,rgba(240,192,112,0.15)_0%,transparent_70%)]"></div>
-      <div ref={cursorDotRef} className="cursor-dot bg-found-candle"></div>
+      {/* Custom Cursor — hidden on touch devices */}
+      <div ref={cursorSpotRef} className="cursor-spotlight bg-[radial-gradient(circle,rgba(240,192,112,0.15)_0%,transparent_70%)] hidden md:block"></div>
+      <div ref={cursorDotRef} className="cursor-dot bg-found-candle hidden md:block"></div>
 
       <div className={`transition-all duration-700 ease-in-out ${showLogin ? 'blur-sm brightness-75 pointer-events-none select-none' : ''}`}>
         <Navbar 
@@ -180,10 +180,10 @@ export default function LandingPage() {
         />
 
       {/* Hero Section */}
-      <section className={`hero-section relative min-h-screen w-full flex bg-lost-bg ${heroMode === 'split' ? 'overflow-hidden' : 'overflow-visible'}`}>
+      <section className={`hero-section relative min-h-screen w-full flex flex-col md:flex-row bg-lost-bg ${heroMode === 'split' ? 'overflow-hidden' : 'overflow-visible'}`}>
         
-        {/* Left: Lost World */}
-        <div className={`hero-half min-h-full flex flex-col justify-center relative z-10 transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden whitespace-nowrap ${heroMode === 'lost' ? 'w-full' : heroMode === 'found' ? 'w-0 opacity-0' : 'w-1/2'}`}>
+        {/* Left / Top: Lost World */}
+        <div className={`hero-half flex flex-col justify-center relative z-10 transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden whitespace-nowrap ${heroMode === 'lost' ? 'w-full min-h-screen' : heroMode === 'found' ? 'md:w-0 w-full h-0 md:h-auto min-h-0 opacity-0' : 'w-full md:w-1/2 min-h-[50vh] md:min-h-full'}`}>
           {/* Drifting background items */}
           <div className="floating-item item-1">🔑</div>
           <div className="floating-item item-2">💳</div>
@@ -193,18 +193,19 @@ export default function LandingPage() {
           <div className="floating-item item-6">⌚</div>
           <div className="floating-item item-7">🎧</div>
           <div className="floating-item item-8">🌂</div>
+          <div className="floating-item item-8">📖</div>
           
           {/* Old Elements (Intro Text) */}
-          <div className={`w-[50vw] h-full flex flex-col justify-center px-8 sm:px-16 2xl:px-32 transition-all duration-[800ms] ease-in-out absolute top-0 right-0 ${heroMode === 'split' ? 'opacity-100 translate-x-0 pointer-events-auto delay-500' : 'opacity-0 -translate-x-16 pointer-events-none'}`}>
-            <div className="text-right whitespace-normal max-w-xl self-end">
+          <div className={`w-full md:w-[50vw] h-full flex flex-col justify-center px-6 sm:px-12 md:px-16 2xl:px-32 transition-all duration-[800ms] ease-in-out absolute top-0 right-0 ${heroMode === 'split' ? 'opacity-100 translate-x-0 pointer-events-auto delay-500' : 'opacity-0 -translate-x-16 pointer-events-none'}`}>
+            <div className="text-center md:text-right whitespace-normal max-w-xl self-center md:self-end">
               <p className="font-syne font-bold text-lost-accent uppercase tracking-[0.2em] text-sm mb-4">Lost Something?</p>
-              <h1 className="font-syne font-extrabold text-lost-text text-5xl lg:text-7xl leading-tight tracking-tight mb-8">
+              <h1 className="font-syne font-extrabold text-lost-text text-3xl sm:text-5xl lg:text-7xl leading-tight tracking-tight mb-6 md:mb-8">
                 Something slipped<br />into the dark
               </h1>
-              <p className="font-crimson italic text-lost-muted text-xl lg:text-2xl max-w-md mb-10 border-r-2 border-lost-accent pr-6 py-2 leading-relaxed text-right ms-auto ">
+              <p className="font-crimson italic text-lost-muted text-lg sm:text-xl lg:text-2xl max-w-md mb-8 md:mb-10 border-r-2 border-lost-accent pr-6 py-2 leading-relaxed text-right ms-auto hidden md:block">
                 When the shadows deepen and what was yours goes astray, let our network locate the trace.
               </p>
-              <button onClick={() => requireAuth(() => setHeroMode('lost'))} className="ghost-btn inline-block border-2 border-lost-accent text-lost-accent font-syne font-bold py-4 px-10 rounded-full transition-all hover:bg-lost-accent hover:text-white uppercase tracking-wider text-sm cursor-none">
+              <button onClick={() => requireAuth(() => setHeroMode('lost'))} className="ghost-btn inline-block border-2 border-lost-accent text-lost-accent font-syne font-bold py-3 px-6 sm:py-4 sm:px-10 rounded-full transition-all hover:bg-lost-accent hover:text-white uppercase tracking-wider text-xs sm:text-sm cursor-none">
                 Report Lost Item
               </button>
             </div>
@@ -220,21 +221,21 @@ export default function LandingPage() {
         </div>
 
         {/* Right: Found World */}
-        <div className={`hero-half min-h-full bg-found-bg flex flex-col justify-center relative z-10 border-found-gold/10 overflow-hidden whitespace-nowrap transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] ${heroMode === 'found' ? 'w-full' : heroMode === 'lost' ? 'w-0 opacity-0 border-l-0' : 'w-1/2 border-l'}`}>
+        <div className={`hero-half bg-found-bg flex flex-col justify-center relative z-10 border-found-gold/10 overflow-hidden whitespace-nowrap transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] ${heroMode === 'found' ? 'w-full min-h-screen' : heroMode === 'lost' ? 'md:w-0 w-full h-0 md:h-auto min-h-0 opacity-0 border-l-0 border-t-0' : 'w-full md:w-1/2 min-h-[50vh] md:min-h-full border-t md:border-t-0 md:border-l'}`}>
           {/* Amber wash from the seam */}
           <div className={`absolute inset-y-0 left-0 w-64 bg-gradient-to-r from-found-ember/20 to-transparent pointer-events-none transition-opacity duration-1000 ${heroMode === 'split' ? 'opacity-100' : 'opacity-0'}`}></div>
           
           {/* Old Elements (Intro Text) */}
-          <div className={`w-[50vw] h-full flex flex-col justify-center px-8 sm:px-16 2xl:px-32 transition-all duration-[800ms] ease-in-out absolute top-0 left-0 ${heroMode === 'split' ? 'opacity-100 translate-x-0 pointer-events-auto delay-500' : 'opacity-0 translate-x-16 pointer-events-none'}`}>
-            <div className="whitespace-normal max-w-xl self-start">
+          <div className={`w-full md:w-[50vw] h-full flex flex-col justify-center px-6 sm:px-12 md:px-16 2xl:px-32 transition-all duration-[800ms] ease-in-out absolute top-0 left-0 ${heroMode === 'split' ? 'opacity-100 translate-x-0 pointer-events-auto delay-500' : 'opacity-0 translate-x-16 pointer-events-none'}`}>
+            <div className="whitespace-normal max-w-xl self-center md:self-start text-center md:text-left">
               <p className="font-syne font-bold text-found-ink uppercase tracking-[0.2em] text-sm mb-4">Found Something?</p>
-              <h1 className="font-syne font-extrabold text-found-text text-5xl lg:text-7xl leading-tight tracking-tight mb-8">
+              <h1 className="font-syne font-extrabold text-found-text text-3xl sm:text-5xl lg:text-7xl leading-tight tracking-tight mb-6 md:mb-8">
                 Carry the light<br />someone needs
               </h1>
-              <p className="font-crimson italic text-found-ink text-xl lg:text-2xl max-w-md mb-10 border-l-2 border-found-gold pl-6 py-2 leading-relaxed">
+              <p className="font-crimson italic text-found-ink text-lg sm:text-xl lg:text-2xl max-w-md mb-8 md:mb-10 border-l-2 border-found-gold pl-6 py-2 leading-relaxed hidden md:block">
                 A spark of kindness returning what was lost. "Carry the light" and guide it back home.
               </p>
-              <button onClick={() => requireAuth(() => setHeroMode('found'))} className="solid-gold-btn inline-block bg-found-gold text-white shadow-[0_4px_14px_rgba(200,147,58,0.4)] font-syne font-bold py-4 px-10 rounded-full transition-all hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(200,147,58,0.6)] uppercase tracking-wider text-sm cursor-none">
+              <button onClick={() => requireAuth(() => setHeroMode('found'))} className="solid-gold-btn inline-block bg-found-gold text-white shadow-[0_4px_14px_rgba(200,147,58,0.4)] font-syne font-bold py-3 px-6 sm:py-4 sm:px-10 rounded-full transition-all hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(200,147,58,0.6)] uppercase tracking-wider text-xs sm:text-sm cursor-none">
                 Post Found Item
               </button>
             </div>
@@ -248,8 +249,8 @@ export default function LandingPage() {
           )}
         </div>
 
-        {/* The Seam / Rift */}
-        <div className={`absolute inset-y-0 left-1/2 -translate-x-1/2 w-64 z-20 pointer-events-none flex justify-center mix-blend-screen transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] ${heroMode === 'lost' ? 'left-full translate-x-1/2 opacity-0' : heroMode === 'found' ? 'left-0 -translate-x-[150%] opacity-0' : 'left-1/2 -translate-x-1/2 opacity-100'}`}>
+        {/* The Seam / Rift — hidden on mobile */}
+        <div className={`absolute inset-y-0 left-1/2 -translate-x-1/2 w-64 z-20 pointer-events-none hidden md:flex justify-center mix-blend-screen transition-all duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)] ${heroMode === 'lost' ? 'left-full translate-x-1/2 opacity-0' : heroMode === 'found' ? 'left-0 -translate-x-[150%] opacity-0' : 'left-1/2 -translate-x-1/2 opacity-100'}`}>
           <canvas ref={canvasRef} className="h-full w-full"></canvas>
         </div>
       </section>
@@ -364,7 +365,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-16 relative z-10">
           
           <div className="flex-1 text-center lg:text-left scroll-reveal slide-up">
-            <h2 className="font-syne font-extrabold text-5xl text-white mb-8 leading-tight">
+            <h2 className="font-syne font-extrabold text-3xl sm:text-5xl text-white mb-8 leading-tight">
               Something's waiting<br/>
               <span className="text-found-gold">to find its way</span><br/>
               back home.

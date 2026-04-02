@@ -15,9 +15,9 @@ export default function PostFoundForm({ onCancel }) {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto animate-fade-in p-8">
-      <div className="flex justify-between items-center mb-10">
-        <h2 className="font-syne font-extrabold text-4xl text-found-ink tracking-wide">
+    <div className="w-full max-w-2xl mx-auto animate-fade-in px-4 sm:p-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 sm:mb-10">
+        <h2 className="font-syne font-extrabold text-2xl sm:text-4xl text-found-ink tracking-wide">
           Post <span className="text-found-gold">Found Item</span>
         </h2>
         <button onClick={onCancel} className="text-found-ink/60 hover:text-found-ink transition-colors cursor-pointer font-syne uppercase tracking-wider text-sm border border-found-ink/30 px-4 py-2 rounded-full hover:border-found-ink">
@@ -73,7 +73,7 @@ export default function PostFoundForm({ onCancel }) {
         {/* Location Dropdowns */}
         <div>
           <label className="block font-syne text-found-ink/80 text-sm uppercase tracking-widest mb-2 border-l-2 border-found-gold pl-3">Location Found</label>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <select 
               value={formData.location.block}
               onChange={(e) => setFormData({...formData, location: {...formData.location, block: e.target.value}})}

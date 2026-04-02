@@ -13,9 +13,11 @@
   --c-found-ember: #d4773a;
 }
 
-/* Global cursor overrider for landing */
-.landing-wrapper * {
-  cursor: none !important;
+/* Global cursor overrider for landing - desktop only */
+@media (min-width: 768px) {
+  .landing-wrapper * {
+    cursor: none !important;
+  }
 }
 
 /* Custom Cursor Dot */
