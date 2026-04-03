@@ -20,6 +20,7 @@ export default function MessagesPage() {
   const [socket, setSocket] = useState(null);
   const [loading, setLoading] = useState(true);
   const [messagesLoading, setMessagesLoading] = useState(false);
+  const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
 
   // Initialize Socket.io
   useEffect(() => {
@@ -100,6 +101,7 @@ export default function MessagesPage() {
     if (!activeChat) return;
 
     const fetchMessages = async () => {
+      setMessages([]); // Clear previous whispers for a fresh context
       setMessagesLoading(true);
       try {
         const res = await api.get(`/messages/${activeChat.postId}/${activeChat.otherUser._id}`);
@@ -156,10 +158,10 @@ export default function MessagesPage() {
         onLogout={handleLogout} 
       />
 
-      <div className="pt-24 h-screen flex overflow-hidden">
+      <div className="pt-24 h-[calc(100vh)] flex overflow-hidden">
         
         {/* Left Sidebar: The Archive */}
-        <div className="w-full md:w-1/3 lg:w-1/4 bg-lost-mid/40 border-r border-white/5 flex flex-col backdrop-blur-xl">
+        <div className={`w-full md:w-1/3 lg:w-1/4 bg-lost-mid/40 border-r border-white/5 flex-col backdrop-blur-xl ${isMobileChatOpen ? 'hidden md:flex' : 'flex'}`}>
           <div className="p-8 border-b border-white/5">
             <h2 className="text-2xl font-extrabold tracking-tighter uppercase mb-1">The Archive</h2>
             <p className="text-[10px] text-lost-muted font-bold tracking-[0.2em] uppercase">Active Whispers</p>
@@ -189,6 +191,7 @@ export default function MessagesPage() {
                 key={idx}
                 onClick={() => {
                   setActiveChat({ postId: conv.postId, otherUser: conv.otherUser, postTitle: conv.postTitle });
+                  setIsMobileChatOpen(true);
                   // Clean URL if we were on a specific chat
                   if (location.search) navigate('/messages', { replace: true });
                 }}
@@ -225,18 +228,27 @@ export default function MessagesPage() {
         </div>
 
         {/* Right Pane: The Whisper */}
-        <div className="hidden md:flex flex-1 flex-col relative bg-gradient-to-b from-lost-bg to-black/40">
+        <div className={`${isMobileChatOpen ? 'flex' : 'hidden md:flex'} flex-1 flex-col relative bg-gradient-to-b from-lost-bg to-black/40`}>
           {activeChat ? (
             <>
               {/* Chat Header */}
-              <div className="p-6 border-b border-white/5 backdrop-blur-xl bg-black/20 flex items-center justify-between">
-                <div>
-                   <h2 className="text-sm font-extrabold uppercase tracking-[0.2em] text-found-gold mb-1">
-                     Discussion: {activeChat.postTitle}
-                   </h2>
-                   <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
-                     Connection: {activeChat.otherUser.name}
-                   </p>
+              <div className="p-4 sm:p-6 border-b border-white/5 backdrop-blur-xl bg-black/20 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  {/* Exit Mobile Chat */}
+                  <button 
+                    onClick={() => setIsMobileChatOpen(false)}
+                    className="md:hidden p-2 -ml-2 text-found-gold hover:text-white transition-colors"
+                  >
+                    ←
+                  </button>
+                  <div>
+                    <h2 className="text-sm font-extrabold uppercase tracking-[0.2em] text-found-gold mb-1">
+                      Discussion: {activeChat.postTitle}
+                    </h2>
+                    <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
+                      Connection: {activeChat.otherUser.name}
+                    </p>
+                  </div>
                 </div>
                 <div className="px-4 py-1.5 rounded-full border border-found-gold/30 text-[9px] font-bold uppercase tracking-widest text-found-gold animate-pulse">
                   Active Link Established
@@ -282,13 +294,14 @@ export default function MessagesPage() {
                     value={newMessageText}
                     onChange={(e) => setNewMessageText(e.target.value)}
                     placeholder="Whisper your message..."
-                    className="w-full bg-lost-mid border border-white/10 text-white pl-8 pr-20 py-5 rounded-2xl outline-none focus:border-found-gold/50 transition-all font-syne text-sm uppercase tracking-widest"
+                    className="w-full bg-lost-mid border border-white/10 text-white pl-6 sm:pl-8 pr-16 sm:pr-32 py-4 sm:py-5 rounded-2xl outline-none focus:border-found-gold/50 transition-all font-syne text-sm uppercase tracking-widest placeholder:text-lost-muted/30"
                   />
                   <button 
                     type="submit"
-                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-found-gold text-white px-6 py-2 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all hover:scale-105 active:scale-95 cursor-none"
+                    className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 bg-found-gold text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold uppercase tracking-widest transition-all hover:scale-105 active:scale-95 cursor-none"
                   >
-                    Transmit
+                    <span className="hidden sm:inline text-[10px]">Transmit</span>
+                    <span className="sm:hidden text-base">➤</span>
                   </button>
                 </div>
               </form>

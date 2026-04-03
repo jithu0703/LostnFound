@@ -73,36 +73,36 @@ export default function PostsPage() {
         onLogout={handleLogout}
       />
 
-      <div className="pt-32 pb-20 px-8">
+      <div className="pt-24 sm:pt-32 pb-20 px-6 sm:px-8">
         <div className="max-w-6xl mx-auto">
           {/* Header Section */}
-          <div className="mb-12">
-            <h1 className="font-syne font-extrabold text-6xl sm:text-7xl lg:text-8xl text-white mb-6 tracking-tighter leading-none">
+          <div className="mb-8 sm:mb-12">
+            <h1 className="font-syne font-extrabold text-4xl sm:text-7xl lg:text-8xl text-white mb-4 sm:mb-6 tracking-tighter leading-none">
               The <span className="text-found-gold">Great Inventory</span>
             </h1>
-            <p className="font-crimson italic text-lost-muted text-2xl max-w-2xl leading-relaxed">
+            <p className="font-crimson italic text-lost-muted text-lg sm:text-2xl max-w-2xl leading-relaxed">
               Every object tells a story of being missing, or the hope of being found.
             </p>
           </div>
 
           {/* Controls Section - Dedicated Row */}
-          <div className="flex flex-col lg:flex-row items-center gap-6 mb-16 pt-10 border-t border-white/5">
+          <div className="flex flex-col lg:flex-row items-center gap-4 sm:gap-6 mb-12 sm:mb-16 pt-8 sm:pt-10 border-t border-white/5">
             {/* Search Bar - Massive Expansion */}
-            <div className="relative w-full lg:flex-1 group ">
+            <div className="relative w-full lg:flex-1 group">
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Scan the ledger for an item name..."
-                className="w-full bg-lost-mid/40 border border-white/10 text-white pl-16 pr-16 py-5.5 rounded-2xl outline-none focus:border-found-gold/50 focus:bg-lost-mid/60 transition-all font-syne text-sm md:text-base uppercase tracking-widest backdrop-blur-xl shadow-2xl placeholder:text-lost-muted/40 "
+                placeholder="Scan for item names..."
+                className="w-full bg-lost-mid/40 border border-white/10 text-white pl-12 sm:pl-16 pr-12 sm:pr-16 py-4 sm:py-5.5 rounded-2xl outline-none focus:border-found-gold/50 focus:bg-lost-mid/60 transition-all font-syne text-xs sm:text-sm md:text-base uppercase tracking-[0.1em] sm:tracking-widest backdrop-blur-xl shadow-2xl placeholder:text-lost-muted/40"
                 style={{height:55}}
               />
-              <span className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl grayscale opacity-30 group-focus-within:grayscale-0 group-focus-within:opacity-100 transition-all">🔍</span>
+              <span className="absolute left-5 sm:left-6 top-1/2 -translate-y-1/2 text-xl sm:text-2xl grayscale opacity-30 group-focus-within:grayscale-0 group-focus-within:opacity-100 transition-all">🔍</span>
 
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-6 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors cursor-none text-xl"
+                  className="absolute right-5 sm:right-6 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors cursor-none text-lg sm:text-xl"
                 >
                   ✕
                 </button>
@@ -110,12 +110,12 @@ export default function PostsPage() {
             </div>
 
             {/* Filter Toggle */}
-            <div className="flex bg-lost-mid/80 p-1.5 rounded-2xl border border-white/5 backdrop-blur-md self-stretch lg:self-auto min-w-[320px] shadow-xl">
+            <div className="flex w-full lg:w-auto bg-lost-mid/80 p-1 rounded-2xl border border-white/5 backdrop-blur-md self-stretch lg:self-auto md:min-w-[320px] shadow-xl">
               {['all', 'lost', 'found'].map((t) => (
                 <button
                   key={t}
                   onClick={() => setFilter(t)}
-                  className={`flex-1 px-8 py-3.5 rounded-xl font-syne font-bold text-[10px] md:text-xs uppercase tracking-[0.3em] transition-all cursor-none ${filter === t ? 'bg-found-gold text-white shadow-lg scale-[1.02]' : 'text-lost-muted hover:text-white'}`}
+                  className={`flex-1 px-4 sm:px-8 py-3 rounded-xl font-syne font-bold text-[9px] md:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] transition-all cursor-none ${filter === t ? 'bg-found-gold text-white shadow-lg scale-[1.02]' : 'text-lost-muted hover:text-white'}`}
                 >
                   {t}
                 </button>
