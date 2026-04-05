@@ -21,6 +21,8 @@ export default function MessagesPage() {
   const [loading, setLoading] = useState(true);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
+  const [messageCache, setMessageCache] = useState({}); // { 'postId-userId': [messages] }
+  const CACHE_LIMIT = 10;
 
   // Initialize Socket.io
   useEffect(() => {
@@ -32,7 +34,9 @@ export default function MessagesPage() {
     newSocket.emit("joinRoom", { userId: user._id || user.id });
 
     newSocket.on("receiveMessage", (message) => {
-      // If message belongs to current active chat, add it
+      const cacheKey = `${message.postId}-${message.senderId === (user._id || user.id) ? message.receiverId : message.senderId}`;
+
+      // 1. Update active chat if currently viewing it
       setActiveChat(prevActive => {
         if (prevActive && 
             message.postId === prevActive.postId && 
@@ -41,7 +45,20 @@ export default function MessagesPage() {
         }
         return prevActive;
       });
-      // Refresh conversations list to show latest message and unread count
+
+      // 2. Sync with cache for future visits
+      setMessageCache(prev => {
+        const existing = prev[cacheKey] || [];
+        // Only append if not already in cache (to prevent duplicates if fetch/socket sync)
+        if (existing.some(m => m._id === message._id)) return prev;
+        
+        return {
+          ...prev,
+          [cacheKey]: [...existing, message]
+        };
+      });
+
+      // 3. Refresh archive summary
       fetchConversations();
     });
 
@@ -100,20 +117,49 @@ export default function MessagesPage() {
   useEffect(() => {
     if (!activeChat) return;
 
-    const fetchMessages = async () => {
-      setMessages([]); // Clear previous whispers for a fresh context
-      setMessagesLoading(true);
+    const cacheKey = `${activeChat.postId}-${activeChat.otherUser._id}`;
+    const cachedData = messageCache[cacheKey];
+
+    const fetchMessages = async (silent = false) => {
+      if (!silent) {
+        setMessages([]); // Clear for fresh context only on first load
+        setMessagesLoading(true);
+      }
+
       try {
         const res = await api.get(`/messages/${activeChat.postId}/${activeChat.otherUser._id}`);
-        setMessages(res.data);
+        const freshMessages = res.data;
+        
+        setMessages(freshMessages);
+        
+        // Update Cache with Limit Management
+        setMessageCache(prev => {
+          const newCache = { ...prev, [cacheKey]: freshMessages };
+          const keys = Object.keys(newCache);
+          
+          if (keys.length > CACHE_LIMIT) {
+            // Remove oldest key (simple FIFO)
+            delete newCache[keys[0]];
+          }
+          return newCache;
+        });
+
       } catch (err) {
         console.error("Error fetching messages", err);
       } finally {
-        setMessagesLoading(false);
+        if (!silent) setMessagesLoading(false);
       }
     };
 
-    fetchMessages();
+    if (cachedData) {
+      // Instant Load from Cache
+      setMessages(cachedData);
+      // Silent background sync
+      fetchMessages(true);
+    } else {
+      // Full Initial Fetch
+      fetchMessages(false);
+    }
   }, [activeChat]);
 
   // Auto-scroll to bottom
