@@ -28,7 +28,10 @@ export default function MessagesPage() {
   useEffect(() => {
     if (!user) return;
 
-    const newSocket = io(api.defaults.baseURL.replace('/api', ''));
+    const newSocket = io(api.defaults.baseURL.replace(/\/api\/?$/, ""), {
+      withCredentials: true,
+      transports: ["websocket", "polling"],
+    });
     setSocket(newSocket);
 
     newSocket.emit("joinRoom", { userId: user._id || user.id });
