@@ -28,7 +28,7 @@ export default function MessagesPage() {
   useEffect(() => {
     if (!user) return;
 
-    const newSocket = io("http://localhost:5000");
+    const newSocket = io(api.defaults.baseURL.replace('/api', ''));
     setSocket(newSocket);
 
     newSocket.emit("joinRoom", { userId: user._id || user.id });
@@ -248,7 +248,7 @@ export default function MessagesPage() {
                 <div className="relative">
                   <div className="w-12 h-12 rounded-xl bg-lost-accent/20 flex items-center justify-center font-bold text-lost-accent overflow-hidden">
                     {conv.postImage ? (
-                      <img src={`http://localhost:5000${conv.postImage}`} className="w-full h-full object-cover" alt="" />
+                      <img src={conv.postImage} className="w-full h-full object-cover" alt="" />
                     ) : (
                       conv.otherUser.name.charAt(0)
                     )}

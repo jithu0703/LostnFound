@@ -110,7 +110,7 @@ export default function PostDetailsPage() {
             <div className="w-full lg:w-1/2 rounded-3xl overflow-hidden shadow-2xl relative group bg-black/20 aspect-[4/5]">
               {post.imageUrl ? (
                 <img 
-                  src={`http://localhost:5000${post.imageUrl}`} 
+                  src={post.imageUrl} 
                   alt={post.itemName} 
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
                 />

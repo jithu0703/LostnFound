@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 
 export default function PostFoundForm({ onCancel }) {
@@ -40,9 +40,8 @@ export default function PostFoundForm({ onCancel }) {
         data.append('image', formData.image);
       }
 
-      await axios.post('http://localhost:5000/api/posts', data, {
+      await api.post('/posts', data, {
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
