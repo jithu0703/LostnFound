@@ -70,9 +70,14 @@ export default function Navbar({ onLoginClick, isAuthenticated, user, onLogout }
                 </button>
               </div>
             ) : (
-              <button onClick={onLoginClick} className="px-6 py-2 border-2 border-found-gold text-found-ink rounded-full hover:bg-found-gold hover:text-white transition-all shadow-md active:scale-95 cursor-none">
-                Sign In
-              </button>
+              <div className="flex gap-3 items-center">
+                <button onClick={onLoginClick} className="px-6 py-2 border-2 border-found-gold text-found-ink rounded-full hover:bg-found-gold hover:text-white transition-all shadow-md active:scale-95 cursor-none">
+                  Sign In
+                </button>
+                <Link to="/admin/login" className="px-6 py-2 border-2 border-found-gold text-found-ink rounded-full hover:bg-found-gold hover:text-white transition-all shadow-md active:scale-95 cursor-none">
+                  Admin
+                </Link>
+              </div>
             )}
           </div>
 

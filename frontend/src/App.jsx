@@ -4,7 +4,8 @@ import LandingPage from "./pages/LandingPage";
 import PostsPage from "./pages/PostsPage";
 import MessagesPage from "./pages/MessagesPage";
 import PostDetailsPage from "./pages/PostDetailsPage";
-
+import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminPostsPage from "./pages/AdminPostsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -12,30 +13,33 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route 
-          path="/posts" 
+        <Route
+          path="/posts"
           element={
             <ProtectedRoute>
               <PostsPage />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/posts/:id" 
+        <Route
+          path="/posts/:id"
           element={
             <ProtectedRoute>
               <PostDetailsPage />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/messages" 
+        <Route
+          path="/messages"
           element={
             <ProtectedRoute>
               <MessagesPage />
             </ProtectedRoute>
-          } 
+          }
         />
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLoginPage />} />
+        <Route path="/admin/posts" element={<AdminPostsPage />} />
       </Routes>
     </Router>
   );
