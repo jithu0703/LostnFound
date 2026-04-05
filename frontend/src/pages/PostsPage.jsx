@@ -148,7 +148,7 @@ export default function PostsPage() {
                   <div className="aspect-[4/3] w-full overflow-hidden bg-black/40 flex items-center justify-center relative">
                     {post.imageUrl ? (
                       <img
-                        src={`http://localhost:5000${post.imageUrl}`}
+                        src={post.imageUrl}
                         alt={post.itemName}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                       />

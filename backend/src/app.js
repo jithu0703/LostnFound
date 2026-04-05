@@ -1,4 +1,5 @@
 import express from 'express';
+import dotenv from "dotenv";
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
@@ -28,6 +29,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api/auth', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/messages', messageRoutes);
+
 
 app.get('/', (req, res) => {
   res.send('API running...');

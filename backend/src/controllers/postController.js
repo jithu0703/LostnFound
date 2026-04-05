@@ -14,10 +14,13 @@ export const createPost = async (req, res) => {
     }
 
     if (!type || !itemName || !description || !date) {
-      return res.status(400).json({ message: 'Type, itemName, description, and date are required' });
+      return res.status(400).json({
+        message: 'Type, itemName, description, and date are required'
+      });
     }
 
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : req.body.imageUrl;
+    // ✅ Cloudinary URL should come from middleware/controller
+    const imageUrl = req.fileUrl || req.body.imageUrl;
 
     const newPost = new Post({
       userId: req.user._id,
