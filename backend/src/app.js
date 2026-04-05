@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from "dotenv";
 import cors from 'cors';
 import morgan from 'morgan';
+import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
@@ -15,14 +16,18 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+app.use(helmet({
+  crossOriginResourcePolicy: false, // Allows the frontend to load images served from /uploads
+}));
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true
 }));
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(morgan('dev'));
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 // Static folder for uploaded images
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

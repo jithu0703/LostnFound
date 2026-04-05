@@ -1,4 +1,4 @@
-﻿# Campus Lost & Found
+# Campus Lost & Found
 
 A full-stack web application for reporting and recovering lost items on campus. Students can post lost or found items, browse listings, and connect with each other to reunite people with their belongings.
 
@@ -60,3 +60,27 @@ The frontend runs on `http://localhost:5173` and proxies API requests to the bac
 ## Author
 
 Jithendra
+
+---
+
+## Deployment
+
+This app is configured for deployment on **Vercel** (Frontend) and **Render** (Backend).
+
+### Backend (Render)
+1. Set the Root Directory to `backend`
+2. Set the Build Command to `npm install`
+3. Set the Start Command to `npm start` (make sure your `package.json` has `"start": "node server.js"`)
+4. Add the following Environment Variables:
+   - `MONGO_URI`
+   - `JWT_SECRET`
+   - `CLOUDINARY_CLOUD_NAME`
+   - `CLOUDINARY_API_KEY`
+   - `CLOUDINARY_API_SECRET`
+   - `CLIENT_URL`: Set this to your live **Vercel domain** (e.g., `https://lostnfound.vercel.app`)
+
+### Frontend (Vercel)
+1. Set the Root Directory to `frontend`
+2. The Build Command and Output Directory should be automatically detected by Vercel for a Vite project.
+3. Add the following Environment Variable:
+   - `VITE_API_BASE_URL`: Set this to your live **Render API URL** (e.g., `https://lostnfound-backend.onrender.com/api`)
