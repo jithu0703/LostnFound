@@ -171,6 +171,7 @@ export default function LandingPage() {
           isAuthenticated={isAuthenticated} 
           user={user} 
           onLogout={handleLogout} 
+          mode={heroMode}
         />
 
       {/* Hero Section */}
@@ -253,17 +254,17 @@ export default function LandingPage() {
       <section className="stats-strip w-full bg-lost-mid border-y border-white/5 py-12 px-8 z-30 relative scroll-reveal slide-up">
         <div className="max-w-6xl mx-auto flex flex-wrap justify-between items-center text-center gap-8">
           <div className="stat-item flex-1 min-w-[200px]">
-            <div className="font-syne font-bold text-4xl text-found-gold mb-2">340+</div>
+            <div className="font-syne font-bold text-4xl text-found-gold mb-2">? +</div>
             <div className="font-syne text-xs uppercase tracking-[0.15em] text-lost-muted font-semibold">Items Reunited</div>
           </div>
           <div className="stat-item flex-1 min-w-[200px]">
-            <div className="font-syne font-bold text-4xl text-found-gold mb-2">1.2k</div>
+            <div className="font-syne font-bold text-4xl text-found-gold mb-2">1k +</div>
             <div className="font-syne text-xs uppercase tracking-[0.15em] text-lost-muted font-semibold">Active Students</div>
           </div>
-          <div className="stat-item flex-1 min-w-[200px]">
+          {/* <div className="stat-item flex-1 min-w-[200px]">
             <div className="font-syne font-bold text-4xl text-found-gold mb-2">94%</div>
             <div className="font-syne text-xs uppercase tracking-[0.15em] text-lost-muted font-semibold">Match Rate</div>
-          </div>
+          </div> */}
           <div className="stat-item flex-1 min-w-[200px]">
             <div className="font-syne font-bold text-4xl text-found-gold mb-2">48h</div>
             <div className="font-syne text-xs uppercase tracking-[0.15em] text-lost-muted font-semibold">Avg. Recovery</div>
@@ -279,28 +280,14 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Step 1 */}
             <div className="step-card group relative bg-lost-mid p-10 rounded-2xl border border-white/5 overflow-hidden transition-all hover:border-lost-accent/50 scroll-reveal slide-up">
-              <div className="absolute -top-8 -right-0 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-lost-accent/10 transition-colors">1</div>
+              <div className="absolute -top-6 -right-0 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-lost-accent/10 transition-colors">1</div>
               <h3 className="font-syne font-bold text-2xl text-lost-text mb-4 relative z-10">Report Lost</h3>
               <p className="font-crimson text-lost-muted text-lg relative z-10">Describe what slipped away. Upload photos, drop a pin, let the search begin.</p>
             </div>
             
-            {/* Step 2 */}
-            <div className="step-card group relative bg-lost-mid p-10 rounded-2xl border border-white/5 overflow-hidden transition-all hover:border-found-gold/50 scroll-reveal slide-up delay-100">
-              <div className="absolute -top-8 -right-0 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-found-gold/10 transition-colors">2</div>
-              <h3 className="font-syne font-bold text-2xl text-[var(--c-found-candle)] mb-4 relative z-10">Post Found</h3>
-              <p className="font-crimson text-lost-muted text-lg relative z-10">Secure the item. Our AI will automatically generate clear tags and descriptions.</p>
-            </div>
-            
-            {/* Step 3 */}
-            <div className="step-card group relative bg-lost-mid p-10 rounded-2xl border border-white/5 overflow-hidden transition-all hover:border-found-gold/50 scroll-reveal slide-up">
-              <div className="absolute -top-8 -right-0 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-lost-accent/10 transition-colors">3</div>
-              <h3 className="font-syne font-bold text-2xl text-lost-text mb-4 relative z-10">AI Matches</h3>
-              <p className="font-crimson text-lost-muted text-lg relative z-10">The system algorithmically aligns the dark with the light, finding the 94% match instantaneously.</p>
-            </div>
-            
             {/* Step 4 */}
             <div className="step-card group relative bg-lost-mid p-10 rounded-2xl border border-white/5 overflow-hidden transition-all hover:border-lost-accent/50 scroll-reveal slide-up delay-100">
-              <div className="absolute -top-8 -right-0 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-found-gold/10 transition-colors">4</div>
+              <div className="absolute -top-6 -right-0 font-crimson italic text-[140px] leading-none text-white/5 group-hover:text-found-gold/10 transition-colors">2</div>
               <h3 className="font-syne font-bold text-2xl text-[var(--c-found-candle)] mb-4 relative z-10">Reunite</h3>
               <p className="font-crimson text-lost-muted text-lg relative z-10">Connect via encrypted direct messaging. Hand over the item. The cycle completes.</p>
             </div>
@@ -318,12 +305,6 @@ export default function LandingPage() {
               <h4 className="font-syne font-bold text-xl text-white mb-3">Campus-Only Access</h4>
               <p className="font-crimson text-lost-muted">Walled garden for verified student domains only. Trust forms the foundation.</p>
             </div>
-
-            <div className="bg-lost-bg p-8 rounded-xl border border-white/5 scroll-reveal slide-up delay-100">
-              <span className="inline-block px-3 py-1 bg-lost-accent/10 text-lost-accent text-xs font-syne font-bold tracking-widest rounded mb-6">AI</span>
-              <h4 className="font-syne font-bold text-xl text-white mb-3">Instant Match Engine</h4>
-              <p className="font-crimson text-lost-muted">Neural embeddings compare lost reports against found inventory in milliseconds.</p>
-            </div>
             
             <div className="bg-lost-bg p-8 rounded-xl border border-white/5 scroll-reveal slide-up delay-200">
               <span className="inline-block px-3 py-1 bg-found-gold/10 text-found-gold text-xs font-syne font-bold tracking-widest rounded mb-6">CORE</span>
@@ -331,24 +312,11 @@ export default function LandingPage() {
               <p className="font-crimson text-lost-muted">Interactive campus map plotting where items slipped away or were discovered.</p>
             </div>
 
-            <div className="bg-lost-bg p-8 rounded-xl border border-white/5 scroll-reveal slide-up">
-              <span className="inline-block px-3 py-1 bg-lost-accent/10 text-lost-accent text-xs font-syne font-bold tracking-widest rounded mb-6">AI</span>
-              <h4 className="font-syne font-bold text-xl text-white mb-3">Image-to-Description</h4>
-              <p className="font-crimson text-lost-muted">Upload a photo. The AI drafts the dimensions, brand, color, and features.</p>
-            </div>
-
             <div className="bg-lost-bg p-8 rounded-xl border border-white/5 scroll-reveal slide-up delay-100">
               <span className="inline-block px-3 py-1 bg-found-gold/10 text-found-gold text-xs font-syne font-bold tracking-widest rounded mb-6">CORE</span>
               <h4 className="font-syne font-bold text-xl text-white mb-3">Direct Messaging</h4>
               <p className="font-crimson text-lost-muted">Secure, anonymous pinging. Only reveal your contact details when ready.</p>
             </div>
-
-            <div className="bg-lost-bg p-8 rounded-xl border border-white/5 scroll-reveal slide-up delay-200">
-              <span className="inline-block px-3 py-1 bg-lost-accent/10 text-lost-accent text-xs font-syne font-bold tracking-widest rounded mb-6">AI</span>
-              <h4 className="font-syne font-bold text-xl text-white mb-3">Semantic Search</h4>
-              <p className="font-crimson text-lost-muted">Don't remember the brand? Search 'black thermal flask' to find it immediately.</p>
-            </div>
-
           </div>
         </div>
       </section>

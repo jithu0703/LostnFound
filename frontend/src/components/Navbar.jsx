@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import api from '../utils/api';
 
-export default function Navbar({ onLoginClick, isAuthenticated, user, onLogout }) {
+export default function Navbar({ onLoginClick, isAuthenticated, user, onLogout, mode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation();
@@ -40,9 +40,9 @@ export default function Navbar({ onLoginClick, isAuthenticated, user, onLogout }
       <nav className="fixed top-0 w-full z-[100] px-6 sm:px-12 py-3 sm:py-5 flex justify-between items-center pointer-events-auto backdrop-blur-xl bg-white/[0.03] border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
         {/* Left Links - Desktop */}
         <div className="hidden md:flex gap-8 w-1/3 justify-start font-syne text-[10px] font-bold tracking-[0.2em] uppercase items-center">
-          <Link to="/" className={`transition-colors cursor-none ${location.pathname === '/' ? 'text-found-gold' : 'text-white/60 hover:text-white'}`}>Home</Link>
-          <Link to="/posts" className={`transition-colors cursor-none ${location.pathname === '/posts' ? 'text-found-gold' : 'text-white/60 hover:text-white'}`}>Posts</Link>
-          <Link to="/messages" className={`transition-colors cursor-none relative ${location.pathname === '/messages' ? 'text-found-gold' : 'text-white/60 hover:text-white'}`}>
+          <Link to="/" className={`transition-colors cursor-none ${location.pathname === '/' ? 'text-found-gold' : mode === 'found' ? 'text-lost-accent' :('text-white/60 hover:text-white')}`}>Home</Link>
+          <Link to="/posts" className={`transition-colors cursor-none ${location.pathname === '/posts' ? 'text-found-gold' : mode === 'found' ? 'text-lost-accent' :('text-white/60 hover:text-white')}`}>Posts</Link>
+          <Link to="/messages" className={`transition-colors cursor-none relative ${location.pathname === '/messages' ? 'text-found-gold' : mode === 'found' ? 'text-lost-accent' :('text-white/60 hover:text-white')}`}>
             Messages
             {unreadCount > 0 && (
               <span className="absolute -top-1 -right-2.5 w-2 h-2 bg-red-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse"></span>
