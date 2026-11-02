@@ -19,7 +19,7 @@ export const createPost = async (req, res) => {
       });
     }
 
-    // ✅ Cloudinary URL should come from middleware/controller
+    //  Cloudinary URL should come from middleware/controller
     const imageUrl = req.fileUrl || req.body.imageUrl;
 
     const newPost = new Post({
